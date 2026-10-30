@@ -1,0 +1,2883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0a1730" />
+<title>StudySmart — Learn Smarter. Anywhere. Anytime.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        navy: { 50:'#f4f6fc',100:'#e6ebf7',200:'#cbd7ee',300:'#9fb5e0',400:'#6c8ecc',500:'#486bb2',600:'#355295',700:'#2b4178',800:'#1b2c53',900:'#111f3d',950:'#0a1730' },
+        brand: { 50:'#eef3ff',100:'#dce6ff',200:'#bfd2ff',300:'#93b3ff',400:'#5f8aff',500:'#3b66ff',600:'#2044f0',700:'#1832d1',800:'#1a2ca8',900:'#1b2b85' }
+      },
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"','Inter','system-ui','sans-serif'],
+        mono: ['"JetBrains Mono"','ui-monospace','monospace']
+      },
+      boxShadow: {
+        soft: '0 1px 2px rgba(10,23,48,.05), 0 8px 24px -14px rgba(10,23,48,.20)',
+        lift: '0 2px 6px rgba(10,23,48,.06), 0 20px 44px -20px rgba(10,23,48,.30)',
+        glow: '0 0 20px rgba(59,102,255,.3)'
+      }
+    }
+  }
+};
+</script>
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  body { font-feature-settings: "ss01","cv11"; background:#0a1730; overflow-x:hidden; margin:0; transition: background-color 0.5s ease; }
+  body.app-ready { background:#f4f6fc; }
+
+  button, [role="button"], a, input, textarea, select { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  button, [role="button"] { -webkit-user-select: none; user-select: none; cursor: pointer; }
+  button:disabled { cursor: not-allowed; }
+
+  ::selection { background:#93b3ff; color:#0a1730; }
+  * { -webkit-tap-highlight-color: transparent; }
+  .no-scrollbar::-webkit-scrollbar { display:none; }
+  .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+
+  @keyframes fadeUp { from { opacity:0; transform:translateY(10px);} to { opacity:1; transform:translateY(0);} }
+  .anim-in { animation: fadeUp .38s cubic-bezier(.22,.9,.3,1) both; }
+  @keyframes pop { 0% { transform:scale(.94); opacity:0 } 100% { transform:scale(1); opacity:1 } }
+  .anim-pop { animation: pop .25s cubic-bezier(.22,.9,.3,1) both; }
+  .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+
+  /* ---------- SPLASH ---------- */
+  #boot {
+    position: fixed; inset: 0; z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 50% 40%, #111f3d 0%, #0a1730 65%);
+    color: #fff; font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    transition: opacity .6s ease, visibility .6s ease;
+  }
+  #boot.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+
+  .splash-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 0.75rem; padding: 2rem; text-align: center;
+    animation: splashIn .6s ease both;
+  }
+
+  .splash-logo {
+    width: 130px; height: 130px;
+    display: flex; align-items: center; justify-content: center;
+    filter: drop-shadow(0 25px 45px rgba(59,102,255,.45));
+    animation: logoPop 1s cubic-bezier(.22,1.2,.36,1) both;
+  }
+  .splash-logo img { width: 100%; height: 100%; object-fit: contain; }
+
+  .splash-title {
+    font-size: 2rem; font-weight: 800; letter-spacing: -0.02em;
+    margin: 0.5rem 0 0; animation: textSlide .7s .25s ease both;
+  }
+  .splash-title span { color: #5f8aff; }
+
+  .splash-tagline {
+    font-size: 0.9rem; color: #9fb5e0; margin: 0;
+    letter-spacing: 0.02em;
+    animation: textSlide .7s .4s ease both;
+  }
+
+  .splash-loader {
+    width: 180px; height: 4px; border-radius: 4px;
+    background: rgba(255,255,255,.1); overflow: hidden;
+    margin-top: 1.5rem;
+    animation: textSlide .7s .55s ease both;
+  }
+  .splash-loader-bar {
+    height: 100%; width: 40%; border-radius: 4px;
+    background: linear-gradient(90deg, #3b66ff, #8b5cf6);
+    animation: loaderSlide 1.4s ease-in-out infinite;
+  }
+
+  .splash-credit {
+    font-size: 0.7rem; color: #6c8ecc; margin: 1rem 0 0;
+    letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700;
+    animation: textSlide .7s .75s ease both;
+  }
+  .splash-credit strong { color: #93b3ff; font-weight: 800; }
+
+  @keyframes splashIn { from { opacity: 0 } to { opacity: 1 } }
+  @keyframes logoPop {
+    0%   { opacity: 0; transform: scale(.5) rotate(-10deg); }
+    60%  { opacity: 1; transform: scale(1.1) rotate(3deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0); }
+  }
+  @keyframes textSlide { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes loaderSlide { 0% { transform: translateX(-120%); } 100% { transform: translateX(320%); } }
+
+  /* ---------- AI SPLASH ---------- */
+  .ai-splash {
+    position: fixed; inset: 0; z-index: 150;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 50% 50%, #1a2ca8 0%, #0a1730 70%);
+    color: #fff; font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    transition: opacity .4s ease, visibility .4s ease;
+  }
+  .ai-splash.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+  .ai-splash-icon {
+    width: 80px; height: 80px; border-radius: 24px;
+    background: linear-gradient(135deg, #3b66ff, #8b5cf6);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 40px rgba(139, 92, 246, 0.6);
+    animation: pulseGlow 2s infinite alternate;
+  }
+  @keyframes pulseGlow {
+    from { box-shadow: 0 0 20px rgba(139, 92, 246, 0.4); }
+    to { box-shadow: 0 0 60px rgba(139, 92, 246, 0.8); }
+  }
+  .ai-splash-title {
+    font-size: 1.8rem; font-weight: 800; margin-top: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+  .ai-splash-title span { color: #8b5cf6; }
+  .ai-splash-sub {
+    font-size: 0.9rem; color: #9fb5e0; margin-top: 0.5rem;
+  }
+
+  /* ---------- 3D Model Animation ---------- */
+  .scene {
+    width: 200px; height: 200px;
+    perspective: 600px;
+    margin: 0 auto;
+  }
+  .cube {
+    width: 100%; height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: rotateCube 12s infinite linear;
+  }
+  .cube-face {
+    position: absolute;
+    width: 200px; height: 200px;
+    border: 2px solid rgba(59,102,255,0.4);
+    background: rgba(59,102,255,0.05);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; color: #2044f0;
+    backdrop-filter: blur(4px);
+    border-radius: 12px;
+  }
+  .front  { transform: translateZ(100px); }
+  .back   { transform: rotateY(180deg) translateZ(100px); }
+  .right  { transform: rotateY(90deg) translateZ(100px); }
+  .left   { transform: rotateY(-90deg) translateZ(100px); }
+  .top    { transform: rotateX(90deg) translateZ(100px); }
+  .bottom { transform: rotateX(-90deg) translateZ(100px); }
+  
+  @keyframes rotateCube {
+    0% { transform: rotateX(0deg) rotateY(0deg); }
+    100% { transform: rotateX(360deg) rotateY(360deg); }
+  }
+
+  /* ---------- CRASH OVERLAY ---------- */
+  #crash { position: fixed; inset: 0; z-index: 300; display: none; padding: 20px; overflow: auto; background: #0a1730; color: #fff; font-family: ui-monospace, monospace; }
+  #crash.show { display: block; }
+  #crash h1 { font-family: system-ui, sans-serif; font-size: 18px; margin: 0 0 8px; }
+  #crash p.lead { font-family: system-ui, sans-serif; font-size: 13px; color: #9fb5e0; line-height: 1.6; margin: 0 0 16px; }
+  #crash pre { white-space: pre-wrap; word-break: break-word; font-size: 12px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 14px; line-height: 1.6; color: #ffd7d7; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .splash-logo, .splash-title, .splash-tagline, .splash-loader, .splash-credit, .anim-in, .anim-pop { animation-duration: .01ms !important; }
+    .splash-loader-bar { animation: none !important; width: 100%; }
+    .cube { animation: none; }
+    .ai-splash-icon { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="boot">
+  <div class="splash-wrap">
+    <div class="splash-logo">
+      <img src="logo.png" alt="StudySmart Logo" />
+    </div>
+    <h1 class="splash-title">Study<span>Smart</span></h1>
+    <p class="splash-tagline">Learn Smarter. Anywhere. Anytime.</p>
+    <div class="splash-loader"><div class="splash-loader-bar"></div></div>
+    <p class="splash-credit">Created by <strong>GROUP 1D</strong></p>
+  </div>
+</div>
+
+<div id="crash"></div>
+<div id="root"></div>
+
+<script>
+(function(){
+  window.__splashStart = Date.now();
+  window.__splashMinMs = 2000;
+
+  function show(title, detail){
+    var el = document.getElementById('crash');
+    if(!el || el.classList.contains('show')) return;
+    var d = String(detail || '').replace(/[<>&]/g, function(c){ return {'<':'&lt;','>':'&gt;','&':'&amp;'}[c]; });
+    el.innerHTML = '<h1>'+title+'</h1><p class="lead">StudySmart could not start. Check your internet connection and ensure logo.png is in the folder, then reload.</p><pre>'+d+'</pre>';
+    el.classList.add('show');
+    var boot = document.getElementById('boot');
+    if(boot) boot.style.display = 'none';
+  }
+  window.__ssCrash = show;
+  window.addEventListener('error', function(e){
+    if(e && e.target && e.target.tagName === 'SCRIPT'){ show('Script failed to load', 'Failed: ' + (e.target.src || 'inline')); return; }
+    show('Runtime error', (e && e.message) || 'Unknown');
+  }, true);
+  window.addEventListener('unhandledrejection', function(e){ show('Unhandled error', (e.reason && e.reason.message) || String(e.reason)); });
+})();
+</script>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/htm@3.1.1/dist/htm.umd.js"></script>
+
+<script>
+(function () {
+"use strict";
+
+if (typeof React === "undefined" || typeof ReactDOM === "undefined" || typeof htm === "undefined") {
+  window.__ssCrash("Libraries missing", "React, ReactDOM or htm could not be loaded from the CDN.");
+  return;
+}
+
+const { useState, useEffect, useMemo, useRef, useContext, createContext } = React;
+const html = htm.bind(React.createElement);
+
+/* =========================================================
+   Data Models
+   ========================================================= */
+const h  = (text) => ({ t: "h", text });
+const p  = (text) => ({ t: "p", text });
+const list = (items) => ({ t: "list", items });
+const formula = (text) => ({ t: "formula", text });
+const note = (text) => ({ t: "note", text });
+
+const DEMO_NOTICE = "Demonstration content written for the StudySmart prototype. Not affiliated with, endorsed by, or reproduced from any university or publisher.";
+
+const SUBJECTS = [
+  {
+    id:"physics", name:"Engineering Physics", code:"PHY-101", icon:"atom", tint:"blue", category:"engineering",
+    desc:"Mechanics, vectors and the laws that govern motion.",
+    units:[{
+      id:"phy-u1", title:"Unit 1 · Mechanics & Motion", resources:[
+        { id:"phy-n1", title:"Scalars, Vectors & Resolution", type:"Note", minutes:8, free:true, has3D:true,
+          summary:"Distinguish scalars from vectors, add vectors by the triangle law, and resolve any vector into components.",
+          content:[
+            h("1.1 Scalars vs vectors"),
+            p("A scalar is completely described by a magnitude and a unit. A vector needs both magnitude and direction."),
+            formula("R = √(A² + B² + 2AB cos θ)"),
+            note(DEMO_NOTICE)
+          ]},
+        { id:"phy-n2", title:"Newton's Three Laws of Motion", type:"Note", minutes:10, free:true, has3D:true,
+          summary:"Inertia, F = ma, and action–reaction pairs explained.",
+          content:[
+            h("2.1 First law — the law of inertia"),
+            p("A body remains at rest, or continues in uniform motion in a straight line, unless acted upon by a net external force."),
+            formula("F_net = m · a"),
+            note(DEMO_NOTICE)
+          ]},
+        { id:"phy-n3", title:"Work, Energy & Power — Concept Pack", type:"E-Book", minutes:12, free:false, has3D:false,
+          summary:"Work–energy theorem, conservative forces and power calculations.",
+          content:[
+            h("3.1 Work done by a force"),
+            p("Work measures energy transferred when a force moves a body through a displacement."),
+            formula("W = F · d · cos θ"),
+            note(DEMO_NOTICE)
+          ]}
+      ]}
+    ]
+  },
+  {
+    id:"maths", name:"Engineering Mathematics", code:"MAT-101", icon:"target", tint:"violet", category:"engineering",
+    desc:"Limits, continuity and the derivative toolkit.",
+    units:[{
+      id:"mat-u1", title:"Unit 1 · Limits & Derivatives", resources:[
+        { id:"mat-n1", title:"Limits — Concept & Standard Results", type:"Note", minutes:9, free:true, has3D:false,
+          summary:"What a limit means, how to evaluate indeterminate forms, and standard limits.",
+          content:[
+            h("1.1 The idea of a limit"),
+            p("A limit describes the value a function approaches as the input approaches a point."),
+            formula("lim (x → 0) sin x / x = 1"),
+            note(DEMO_NOTICE)
+          ]},
+        { id:"mat-n2", title:"Derivatives — Rules & Techniques", type:"Note", minutes:11, free:true, has3D:true,
+          summary:"Power, product, quotient and chain rules with standard derivatives.",
+          content:[
+            h("2.1 Derivative as a rate of change"),
+            p("The derivative of f at x is the limit of the difference quotient."),
+            formula("d/dx (xⁿ) = n·xⁿ⁻¹"),
+            note(DEMO_NOTICE)
+          ]}
+      ]}
+    ]
+  },
+  {
+    id:"cprogramming", name:"C Programming", code:"CSE-101", icon:"code", tint:"sky", category:"engineering",
+    desc:"Variables, control flow, arrays and strings.",
+    units:[{
+      id:"cse-u1", title:"Unit 1 · Programming Fundamentals", resources:[
+        { id:"cse-n1", title:"Variables, Data Types & Operators", type:"Note", minutes:10, free:true, has3D:false,
+          summary:"Declaring variables, choosing data types, and understanding operator precedence.",
+          content:[
+            h("1.1 Declaring variables"),
+            p("A variable is a named memory location with a type. In C every variable must be declared before it is used."),
+            formula("int marks = 92;"),
+            note(DEMO_NOTICE)
+          ]},
+        { id:"cse-n2", title:"Conditional Statements & Loops", type:"Note", minutes:12, free:true, has3D:false,
+          summary:"if-else ladders, switch-case, and the three loop constructs.",
+          content:[
+            h("2.1 if / else if / else"),
+            p("Conditional statements choose one branch of execution based on a boolean expression."),
+            formula("if (marks >= 90) grade = 'A';"),
+            note(DEMO_NOTICE)
+          ]}
+      ]}
+    ]
+  },
+  {
+    id:"eee", name:"Basic Electrical Engineering", code:"EEE-101", icon:"zap", tint:"amber", category:"engineering",
+    desc:"Voltage, current, resistance and the laws that connect them.",
+    units:[{
+      id:"eee-u1", title:"Unit 1 · Fundamental Concepts", resources:[
+        { id:"eee-n1", title:"Basic Electrical Quantities", type:"Note", minutes:8, free:true, has3D:true,
+          summary:"Charge, current, voltage, resistance and power with their SI units.",
+          content:[
+            h("1.1 Charge and current"),
+            p("Electric current is the rate of flow of electric charge past a point in a circuit."),
+            formula("I = Q / t"),
+            note(DEMO_NOTICE)
+          ]},
+        { id:"eee-n2", title:"Ohm's Law & Circuit Elements", type:"Note", minutes:9, free:true, has3D:true,
+          summary:"Ohm's law, and the behaviour of resistors, inductors and capacitors.",
+          content:[
+            h("2.1 Ohm's law"),
+            p("For a conductor at constant temperature, current is directly proportional to potential difference."),
+            formula("V = I · R"),
+            note(DEMO_NOTICE)
+          ]}
+      ]}
+    ]
+  },
+  {
+    id:"entrepreneurship", name:"Entrepreneurship Dev", code:"ENT-101", icon:"sparkles", tint:"amber", category:"professional",
+    desc:"Mindset, opportunity identification, and business modeling.",
+    units:[{
+      id:"ent-u1", title:"Unit 1 · Startup Fundamentals", resources:[
+        { id:"ent-n1", title:"Introduction to Entrepreneurship", type:"Note", minutes:10, free:true, has3D:false,
+          summary:"What it means to be an entrepreneur and the startup ecosystem.",
+          content:[
+            h("1.1 Who is an entrepreneur?"),
+            p("An entrepreneur identifies a problem, creates a solution, and builds a business around it to generate value."),
+            list(["Innovation", "Risk-taking", "Resource organization"]),
+            note(DEMO_NOTICE)
+          ]},
+        { id:"ent-n2", title:"Business Model Canvas", type:"Note", minutes:15, free:false, has3D:false,
+          summary:"A strategic management template for developing new or documenting existing business models.",
+          content:[
+            h("2.1 The 9 Building Blocks"),
+            p("Customer Segments, Value Propositions, Channels, Customer Relationships, Revenue Streams, Key Resources, Key Activities, Key Partnerships, Cost Structure."),
+            note(DEMO_NOTICE)
+          ]}
+      ]}
+    ]
+  },
+  {
+    id:"communication", name:"Communication Skills", code:"COM-101", icon:"user", tint:"violet", category:"professional",
+    desc:"Professional English, group discussions, and presentation skills.",
+    units:[{
+      id:"com-u1", title:"Unit 1 · Effective Communication", resources:[
+        { id:"com-n1", title:"The 7 C's of Communication", type:"Note", minutes:8, free:true, has3D:false,
+          summary:"Clear, Concise, Concrete, Correct, Coherent, Complete, Courteous.",
+          content:[
+            h("1.1 The 7 C's"),
+            p("To ensure your message is received as intended, it should be:"),
+            list(["Clear", "Concise", "Concrete", "Correct", "Coherent", "Complete", "Courteous"]),
+            note(DEMO_NOTICE)
+          ]},
+        { id:"com-n2", title:"Presentation Skills", type:"Note", minutes:10, free:true, has3D:false,
+          summary:"Structuring a presentation, body language, and engaging the audience.",
+          content:[
+            h("2.1 Structure"),
+            p("A strong presentation has a clear beginning, middle, and end (Tell them what you're going to tell them, tell them, then tell them what you told them)."),
+            note(DEMO_NOTICE)
+          ]}
+      ]}
+    ]
+  },
+  {
+    id:"dsa", name:"Data Structures", code:"CSE-102", icon:"code", tint:"blue", category:"engineering",
+    desc:"Arrays, linked lists, stacks, queues, and trees.",
+    units:[{
+      id:"dsa-u1", title:"Unit 1 · Linear Data Structures", resources:[
+        { id:"dsa-n1", title:"Arrays & Linked Lists", type:"Note", minutes:12, free:true, has3D:true,
+          summary:"Understanding contiguous memory vs node-based structures.",
+          content:[
+            h("1.1 Arrays"),
+            p("Elements stored in contiguous memory. Fast access via index, slow insertion/deletion."),
+            h("1.2 Linked Lists"),
+            p("Nodes connected by pointers. Fast insertion/deletion, slow access."),
+            note(DEMO_NOTICE)
+          ]}
+      ]}
+    ]
+  },
+  {
+    id:"digital", name:"Digital Electronics", code:"ECE-101", icon:"grid", tint:"sky", category:"engineering",
+    desc:"Logic gates, boolean algebra, and flip-flops.",
+    units:[{
+      id:"dig-u1", title:"Unit 1 · Logic Gates", resources:[
+        { id:"dig-n1", title:"Boolean Algebra & Logic Gates", type:"Note", minutes:9, free:true, has3D:true,
+          summary:"AND, OR, NOT, NAND, NOR, XOR, and truth tables.",
+          content:[
+            h("1.1 Basic Gates"),
+            p("Logic gates are the building blocks of digital circuits. They perform boolean operations on binary inputs."),
+            formula("Y = A · B (AND)"),
+            note(DEMO_NOTICE)
+          ]}
+      ]}
+    ]
+  }
+];
+
+const EXPANDED_SUBJECTS = [
+  { id:"chem", name:"Engineering Chemistry", code:"CHY-101", icon:"flask", tint:"emerald", category:"engineering", desc:"Water treatment, polymers, and electrochemistry.", units:[{id:"ch1", title:"Unit 1", resources:[{id:"ch1-n1", title:"Water & Its Treatment", type:"Note", minutes:8, free:true, summary:"Hardness of water, softening methods.", content:[h("Water Treatment"), p("Processes to remove impurities and hardness."), note(DEMO_NOTICE)]}]}]},
+  { id:"graphics", name:"Engineering Graphics", code:"MEC-101", icon:"grid", tint:"amber", category:"engineering", desc:"Projections, isometric views, and CAD basics.", units:[{id:"gr1", title:"Unit 1", resources:[{id:"gr1-n1", title:"Orthographic Projections", type:"Note", minutes:10, free:true, summary:"First and third angle projections.", content:[h("Projections"), p("Methods to represent 3D objects on 2D planes."), note(DEMO_NOTICE)]}]}]},
+  { id:"env", name:"Environmental Studies", code:"ENV-101", icon:"atom", tint:"emerald", category:"engineering", desc:"Ecosystems, pollution, and sustainable development.", units:[{id:"env1", title:"Unit 1", resources:[{id:"env1-n1", title:"Ecosystems", type:"Note", minutes:8, free:true, summary:"Biotic and abiotic components.", content:[h("Ecosystems"), p("Interaction between living and non-living things."), note(DEMO_NOTICE)]}]}]},
+  { id:"ethics", name:"Professional Ethics", code:"HUM-101", icon:"user", tint:"violet", category:"professional", desc:"Moral principles and professional conduct.", units:[{id:"eth1", title:"Unit 1", resources:[{id:"eth1-n1", title:"Introduction to Ethics", type:"Note", minutes:8, free:true, summary:"What is right and wrong in a professional setting.", content:[h("Ethics"), p("Standards of behavior expected in the workplace."), note(DEMO_NOTICE)]}]}]},
+  { id:"softskills", name:"Soft Skills", code:"HUM-102", icon:"sparkles", tint:"amber", category:"professional", desc:"Teamwork, leadership, and emotional intelligence.", units:[{id:"ss1", title:"Unit 1", resources:[{id:"ss1-n1", title:"Teamwork & Collaboration", type:"Note", minutes:8, free:true, summary:"Working effectively in groups.", content:[h("Teamwork"), p("Collaborating to achieve a common goal."), note(DEMO_NOTICE)]}]}]}
+];
+
+const ALL_SUBJECTS = [...SUBJECTS, ...EXPANDED_SUBJECTS];
+
+const QUIZZES = {
+  physics: { title:"Physics · Unit 1 Quiz", questions:[
+    { q:"Which of the following is a vector quantity?", options:["Mass","Time","Displacement","Temperature"], answer:2, explanation:"Displacement has both magnitude and direction." },
+    { q:"The SI unit of force is the:", options:["joule","newton","watt","pascal"], answer:1, explanation:"1 N = 1 kg·m/s²." },
+    { q:"A body continues in uniform motion unless acted on by a net external force. This is:", options:["Newton's first law","Newton's second law","Newton's third law","Work-energy theorem"], answer:0, explanation:"This is the law of inertia." },
+    { q:"A vector of magnitude 10 makes an angle of 60° with the x-axis. Its x-component is:", options:["10","8.66","5","0"], answer:2, explanation:"Aₓ = A cos θ = 10 × 0.5 = 5." },
+    { q:"Two forces of 3 N and 4 N act at right angles. The resultant is:", options:["7 N","5 N","1 N","12 N"], answer:1, explanation:"R = √(3² + 4²) = 5 N." }
+  ]},
+  maths: { title:"Maths · Limits & Derivatives", questions:[
+    { q:"What is lim (x → 0) sin x / x ?", options:["0","1","∞","Does not exist"], answer:1, explanation:"Standard limit." },
+    { q:"d/dx (x³) equals:", options:["3x²","x⁴/4","3x","x²"], answer:0, explanation:"Power rule: 3x²." },
+    { q:"What is lim (x → 2) (x² − 4) / (x − 2) ?", options:["0","2","4","Undefined"], answer:2, explanation:"Factorising gives x + 2 → 4." },
+    { q:"d/dx (sin x) equals:", options:["−cos x","cos x","sin x","−sin x"], answer:1, explanation:"Derivative of sin x is cos x." },
+    { q:"A function is continuous at x = a when:", options:["f(a) is defined","lim f(x) exists","lim f(x) = f(a)","All of the above"], answer:3, explanation:"All three conditions must hold." }
+  ]},
+  cprogramming: { title:"C Programming Quiz", questions:[
+    { q:"Which is a valid variable name in C?", options:["2sum","float","_total","my-var"], answer:2, explanation:"Identifiers can't start with a digit or contain hyphens." },
+    { q:"sizeof(int) is typically:", options:["1 byte","2 bytes","4 bytes","8 bytes"], answer:2, explanation:"4 bytes on modern platforms." },
+    { q:"The % operator can be applied to:", options:["float operands","integer operands","char operands only","any data type"], answer:1, explanation:"Modulus requires integers." },
+    { q:"What does this print? for (i = 0; i < 3; i++) printf(\"%d\", i);", options:["123","012","0123","1234"], answer:1, explanation:"Loop runs for 0, 1, 2." },
+    { q:"For int a[5]; valid indices are:", options:["1 to 5","0 to 5","0 to 4","1 to 4"], answer:2, explanation:"Arrays are zero-indexed." }
+  ]},
+  eee: { title:"Basic Electrical Quiz", questions:[
+    { q:"The SI unit of electric current is the:", options:["coulomb","volt","ampere","ohm"], answer:2, explanation:"Current is in amperes." },
+    { q:"Ohm's law is expressed as:", options:["V = I / R","V = I · R","V = R / I","V = I²R"], answer:1, explanation:"V = IR." },
+    { q:"Two 10 Ω resistors in parallel give:", options:["20 Ω","10 Ω","5 Ω","0.5 Ω"], answer:2, explanation:"R_eq = R/2 = 5 Ω." },
+    { q:"The unit of electrical power is the:", options:["joule","watt","newton","farad"], answer:1, explanation:"1 W = 1 J/s." },
+    { q:"KCL states that:", options:["Sum of voltages around a loop is zero","Sum of currents entering a node equals the sum leaving","Voltage divides equally","Current is constant"], answer:1, explanation:"Kirchhoff's Current Law." }
+  ]},
+  entrepreneurship: { title:"Entrepreneurship Quiz", questions:[
+    { q:"The primary goal of a business model canvas is:", options:["To calculate taxes","To map out key business components","To hire employees","To write code"], answer:1, explanation:"It maps out 9 key blocks." },
+    { q:"An MVP stands for:", options:["Most Valuable Player","Minimum Viable Product","Maximum Value Proposition","Main Venture Plan"], answer:1, explanation:"Minimum Viable Product." },
+    { q:"Which of these is a revenue model?", options:["Freemium","Cost Leadership","Differentiation","Focus"], answer:0, explanation:"Freemium generates revenue." },
+    { q:"What is market research?", options:["Guessing what people want","Gathering data on target audiences","Building a prototype","Writing a business plan"], answer:1, explanation:"Gathering data to understand the market." },
+    { q:"Bootstrapping means:", options:["Taking a bank loan","Funding a startup from personal finances/revenue","Finding a venture capitalist","Selling shares"], answer:1, explanation:"Self-funding." }
+  ]},
+  communication: { title:"Communication Skills Quiz", questions:[
+    { q:"Which of the following is NOT one of the 7 C's of communication?", options:["Clear","Concise","Complex","Courteous"], answer:2, explanation:"Complex is the opposite of Clear/Concise." },
+    { q:"What percentage of communication is non-verbal (approx)?", options:["10%","30%","70%","100%"], answer:2, explanation:"Often cited as 70-93%." },
+    { q:"Active listening involves:", options:["Interrupting","Preparing your response","Focusing entirely on the speaker","Looking at your phone"], answer:2, explanation:"Focusing fully on the speaker." },
+    { q:"In an email, the subject line should be:", options:["Blank","Vague","Clear and specific","Written in all caps"], answer:2, explanation:"Clear and specific." },
+    { q:"A group discussion evaluates:", options:["Only your knowledge","Your teamwork and communication","Your physical strength","Your typing speed"], answer:1, explanation:"Teamwork and communication skills." }
+  ]}
+};
+
+const TINTS = {
+  blue:   { bg:"bg-blue-50",   text:"text-blue-600",   grad:"from-blue-500 to-indigo-600" },
+  violet: { bg:"bg-violet-50", text:"text-violet-600", grad:"from-violet-500 to-purple-600" },
+  sky:    { bg:"bg-sky-50",    text:"text-sky-600",    grad:"from-sky-500 to-cyan-600" },
+  amber:  { bg:"bg-amber-50",  text:"text-amber-600",  grad:"from-amber-500 to-orange-600" },
+  emerald:{ bg:"bg-emerald-50",text:"text-emerald-600",grad:"from-emerald-500 to-teal-600" }
+};
+
+/* =========================================================
+   Utils
+   ========================================================= */
+const cx = (...a) => a.filter(Boolean).join(" ");
+const KEY = (subjectId, noteId) => subjectId + ":" + noteId;
+
+function findSubject(id){ return ALL_SUBJECTS.find(s => s.id === id); }
+function findResource(subjectId, noteId){
+  const subject = findSubject(subjectId);
+  if(!subject) return null;
+  for(const unit of subject.units){
+    const resource = unit.resources.find(r => r.id === noteId);
+    if(resource) return { subject, unit, resource };
+  }
+  return null;
+}
+function timeAgo(ts){
+  const s = Math.floor((Date.now() - ts)/1000);
+  if(s < 60) return "just now";
+  const m = Math.floor(s/60); if(m < 60) return m + " min ago";
+  const hr = Math.floor(m/60); if(hr < 24) return hr + " hr ago";
+  const d = Math.floor(hr/24);
+  if(d === 1) return "yesterday";
+  if(d < 7) return d + " days ago";
+  return new Date(ts).toLocaleDateString();
+}
+const isToday = (ts) => new Date(ts).toDateString() === new Date().toDateString();
+
+function useLocalStorage(key, initial){
+  const [value, setValue] = useState(() => {
+    try { const raw = localStorage.getItem(key); return raw === null ? initial : JSON.parse(raw); }
+    catch(e){ return initial; }
+  });
+  useEffect(() => {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch(e){}
+  }, [key, value]);
+  return [value, setValue];
+}
+
+/* =========================================================
+   Icons
+   ========================================================= */
+const ICONS = {
+  home: html`<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />`,
+  grid: html`<g><rect x="3.5" y="3.5" width="7" height="7" rx="2" /><rect x="13.5" y="3.5" width="7" height="7" rx="2" /><rect x="3.5" y="13.5" width="7" height="7" rx="2" /><rect x="13.5" y="13.5" width="7" height="7" rx="2" /></g>`,
+  help: html`<g><circle cx="12" cy="12" r="9" /><path d="M9.6 9.2a2.5 2.5 0 1 1 3.5 2.4c-.8.4-1.1 1-1.1 1.8" /><path d="M12 17h.01" /></g>`,
+  bookmark: html`<path d="M6.5 4a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v16.2a.6.6 0 0 1-.9.5L12 17.4l-4.6 3.3a.6.6 0 0 1-.9-.5z" />`,
+  user: html`<g><circle cx="12" cy="8" r="4" /><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0" /></g>`,
+  search: html`<g><circle cx="11" cy="11" r="7" /><path d="m16.5 16.5 4 4" /></g>`,
+  chevronLeft: html`<path d="m14.5 6-6 6 6 6" />`,
+  chevronRight: html`<path d="m9.5 6 6 6-6 6" />`,
+  arrowRight: html`<path d="M4.5 12h14m0 0-5-5m5 5-5 5" />`,
+  download: html`<path d="M12 4v10.5m0 0 4-4m-4 4-4-4M4.5 19.5h15" />`,
+  check: html`<path d="m5 12.5 4.5 4.5L19 7" />`,
+  x: html`<path d="M6 6l12 12M18 6 6 18" />`,
+  lock: html`<g><rect x="4.5" y="10.5" width="15" height="10" rx="2.5" /><path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7" /></g>`,
+  crown: html`<path d="M3 8.5 7.5 12 12 5.5 16.5 12 21 8.5 19 19.5H5z" />`,
+  sparkles: html`<g><path d="M12 3.5l1.9 4.9 4.9 1.9-4.9 1.9L12 17.1l-1.9-4.9L5.2 10.3l4.9-1.9z" /><path d="M18.5 16.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" /></g>`,
+  clock: html`<g><circle cx="12" cy="12" r="9" /><path d="M12 7v5.2l3.2 2" /></g>`,
+  file: html`<g><path d="M7 3h7l4 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" /><path d="M14 3v4h4" /></g>`,
+  play: html`<path d="M8 5.2 19 12 8 18.8z" />`,
+  refresh: html`<g><path d="M20 12a8 8 0 0 1-13.7 5.6L4 15.5" /><path d="M20 5v5h-5" /><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.5" /><path d="M4 19v-5h5" /></g>`,
+  logout: html`<path d="M15 12H3.5m0 0 4-4m-4 4 4 4M10 4.5h8.5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H10" />`,
+  bell: html`<g><path d="M18 9.5a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6" /><path d="M10.2 19.5a2 2 0 0 0 3.6 0" /></g>`,
+  trophy: html`<g><path d="M8 4h8v5.5a4 4 0 0 1-8 0z" /><path d="M8 5.5H5v1.8A3.2 3.2 0 0 0 8.2 10.5" /><path d="M16 5.5h3v1.8a3.2 3.2 0 0 1-3.2 3.2" /><path d="M12 13.5V17M9 20.5h6" /></g>`,
+  target: html`<g><circle cx="12" cy="12" r="8.5" /><circle cx="12" cy="12" r="4.5" /><circle cx="12" cy="12" r="1" /></g>`,
+  book: html`<g><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v18H6.5A1.5 1.5 0 0 1 5 19.5z" /><path d="M8.5 3v18" /></g>`,
+  zap: html`<path d="M13 3 4.5 13.5H11L10 21l8.5-10.5H12z" />`,
+  code: html`<path d="m9 8-4 4 4 4M15 8l4 4-4 4" />`,
+  atom: html`<g><circle cx="12" cy="12" r="1.8" /><ellipse cx="12" cy="12" rx="9.5" ry="4.2" /><ellipse cx="12" cy="12" rx="9.5" ry="4.2" transform="rotate(60 12 12)" /><ellipse cx="12" cy="12" rx="9.5" ry="4.2" transform="rotate(120 12 12)" /></g>`,
+  info: html`<g><circle cx="12" cy="12" r="9" /><path d="M12 11v5.5" /><path d="M12 7.8h.01" /></g>`,
+  trash: html`<g><path d="M4.5 6.5h15" /><path d="M9 6.5V4.5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" /><path d="M6.5 6.5 7.5 20a1 1 0 0 0 1 .9h7a1 1 0 0 0 1-.9l1-13.5" /></g>`,
+  flame: html`<path d="M12 3c3 4.2 5 5.8 5 9.2a5 5 0 0 1-10 0c0-2 .9-3.5 2-4.6 0 1.6.5 2.6 1.5 3.1C10.5 8.2 11 5.6 12 3z" />`,
+  chart: html`<path d="M3.5 20.5h17M7.5 20.5v-6M12 20.5V7.5M16.5 20.5v-9" />`,
+  cube: html`<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" />`,
+  ai: html`<path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-4 0V4a2 2 0 0 1 2-2zm0 16a2 2 0 0 1 2 2v2a2 2 0 0 1-4 0v-2a2 2 0 0 1 2-2zM4 12a2 2 0 0 1-2-2V8a2 2 0 0 1 4 0v2a2 2 0 0 1-2 2zm14 0a2 2 0 0 1-2-2V8a2 2 0 0 1 4 0v2a2 2 0 0 1-2 2zm-7-5a5 5 0 1 1 0 10 5 5 0 0 1 0-10z"/>`,
+  camera: html`<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>`,
+  image: html`<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>`,
+  send: html`<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>`,
+  layers: html`<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>`,
+  settings: html`<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>`,
+  volume: html`<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>`,
+  volumeX: html`<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>`
+};
+
+function Icon({ name, className = "h-5 w-5", filled = false, strokeWidth = 1.8 }){
+  return html`<svg viewBox="0 0 24 24" className=${className} aria-hidden="true"
+    fill=${filled ? "currentColor" : "none"} stroke="currentColor"
+    strokeWidth=${strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+    ${ICONS[name] || null}
+  </svg>`;
+}
+
+/* =========================================================
+   UI Primitives
+   ========================================================= */
+function Logo({ dark = false, size = "md" }){
+  const box = size === "lg" ? "h-12 w-12" : "h-9 w-9";
+  const text = size === "lg" ? "text-2xl" : "text-[17px]";
+  return html`<div className="flex items-center gap-2.5">
+    <div className=${cx("relative grid place-items-center", box)}>
+      <img 
+        src="logo.png" 
+        alt="StudySmart Logo" 
+        style=${{ width: "100%", height: "100%", objectFit: "contain" }} 
+      />
+    </div>
+    <span className=${cx("font-extrabold tracking-tight", text, dark ? "text-white" : "text-navy-900")}>
+      Study<span className=${dark ? "text-brand-300" : "text-brand-600"}>Smart</span>
+    </span>
+  </div>`;
+}
+
+function Button({ children, variant = "primary", size = "md", className, ...rest }){
+  const base = "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-150 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/25 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.97] select-none";
+  const sizes = {
+    sm: "px-3 py-2 text-[13px] min-h-[40px]",
+    md: "px-4 py-2.5 text-sm min-h-[46px]",
+    lg: "px-5 py-3.5 text-[15px] min-h-[52px]"
+  };
+  const variants = {
+    primary: "bg-brand-600 text-white shadow-lg shadow-brand-600/25 hover:bg-brand-700",
+    dark: "bg-navy-900 text-white shadow-lg shadow-navy-900/20 hover:bg-navy-800",
+    violet: "bg-gradient-to-r from-violet-600 to-brand-600 text-white shadow-lg shadow-violet-600/25 hover:brightness-110",
+    outline: "border border-navy-200 bg-white text-navy-800 hover:border-navy-300 hover:bg-navy-50",
+    ghost: "text-navy-600 hover:bg-navy-100/70",
+    subtle: "bg-brand-50 text-brand-700 hover:bg-brand-100",
+    white: "bg-white text-navy-900 shadow-lg shadow-black/10 hover:bg-navy-50",
+    danger: "bg-rose-50 text-rose-600 hover:bg-rose-100"
+  };
+  return html`<button className=${cx(base, sizes[size], variants[variant], className)} ...${rest}>${children}</button>`;
+}
+
+function Card({ children, className, ...rest }){
+  return html`<div className=${cx("rounded-2xl border border-navy-100/80 bg-white shadow-soft", className)} ...${rest}>${children}</div>`;
+}
+
+function Badge({ children, tone = "navy", className }){
+  const tones = {
+    navy:"bg-navy-100 text-navy-700", brand:"bg-brand-50 text-brand-700",
+    violet:"bg-violet-50 text-violet-700", green:"bg-emerald-50 text-emerald-700",
+    amber:"bg-amber-50 text-amber-700", rose:"bg-rose-50 text-rose-700",
+    gold:"bg-gradient-to-r from-amber-400 to-orange-400 text-white"
+  };
+  return html`<span className=${cx("inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide", tones[tone], className)}>${children}</span>`;
+}
+
+function ProgressRing({ value, size = 84, stroke = 8, children, trackClass = "text-navy-100" }){
+  const r = (size - stroke) / 2;
+  const c = 2 * Math.PI * r;
+  const clamped = Math.min(100, Math.max(0, value));
+  const offset = c - (clamped / 100) * c;
+  return html`<div className="relative inline-flex shrink-0 items-center justify-center" style=${{ width: size, height: size }}>
+    <svg width=${size} height=${size} className="-rotate-90" aria-hidden="true">
+      <circle cx=${size/2} cy=${size/2} r=${r} strokeWidth=${stroke} stroke="currentColor" className=${cx("fill-none", trackClass)} />
+      <circle cx=${size/2} cy=${size/2} r=${r} strokeWidth=${stroke} strokeLinecap="round" stroke="currentColor"
+        className="fill-none text-brand-500 transition-[stroke-dashoffset] duration-700 ease-out"
+        strokeDasharray=${c} strokeDashoffset=${offset} />
+    </svg>
+    <div className="absolute inset-0 flex flex-col items-center justify-center">${children}</div>
+  </div>`;
+}
+
+function EmptyState({ icon = "file", title, message, action }){
+  return html`<div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-navy-200 bg-white/60 px-4 py-10 text-center sm:px-6 sm:py-12">
+    <div className="mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-navy-50 text-navy-400">
+      <${Icon} name=${icon} className="h-7 w-7" />
+    </div>
+    <h3 className="text-[15px] font-bold text-navy-800">${title}</h3>
+    <p className="mt-1.5 max-w-xs text-sm leading-6 text-navy-500">${message}</p>
+    ${action ? html`<div className="mt-5">${action}</div>` : null}
+  </div>`;
+}
+
+function Modal({ open, onClose, children }){
+  useEffect(() => {
+    if(!open) return;
+    const onKey = (e) => { if(e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = ""; };
+  }, [open, onClose]);
+  if(!open) return null;
+  return html`<div className="fixed inset-0 z-[70] flex items-end justify-center sm:items-center sm:p-6" role="dialog" aria-modal="true">
+    <div className="absolute inset-0 bg-navy-950/60 backdrop-blur-sm" onClick=${onClose}></div>
+    <div className="anim-pop relative max-h-[92vh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-white p-6 pb-8 shadow-lift sm:max-h-[85vh] sm:rounded-3xl sm:pb-6">
+      ${children}
+    </div>
+  </div>`;
+}
+
+function SectionTitle({ children, action }){
+  return html`<div className="mb-3 flex items-end justify-between gap-3">
+    <h2 className="text-[15px] font-extrabold tracking-tight text-navy-900">${children}</h2>
+    ${action || null}
+  </div>`;
+}
+
+/* =========================================================
+   App Context
+   ========================================================= */
+const AppCtx = createContext(null);
+const useApp = () => useContext(AppCtx);
+
+/* =========================================================
+   AI Assistant (Gemini)
+   ========================================================= */
+function AIChat() {
+  const { back, toast } = useApp();
+  const [showSplash, setShowSplash] = useState(true);
+  const [messages, setMessages] = useState([
+    { id: 1, sender: "ai", text: "Welcome to StudySmart AI! Ask a question, upload an image of your notes, or generate study materials.", type: "text" }
+  ]);
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+
+  // Gemini-specific settings
+  const [apiKey, setApiKey] = useLocalStorage("ss_gemini_key", "");
+  const [model, setModel] = useLocalStorage("ss_gemini_model", "gemini-3.8-flash");
+  const [showSettings, setShowSettings] = useState(false);
+  const [tempKey, setTempKey] = useState(apiKey);
+  const [tempModel, setTempModel] = useState(model);
+  const [isSpeakingEnabled, setIsSpeakingEnabled] = useLocalStorage("ss_voice_enabled", true);
+
+  const chatEndRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const cameraInputRef = useRef(null);
+
+  const GEMINI_MODELS = [
+    { id: "gemini-3.8-flash", label: "Gemini 3.8 Flash (latest)" },
+    { id: "gemini-3.8-flash-cyber", label: "Gemini 3.8 Flash Cyber (security)" },
+    { id: "gemini-3.8-flash-tts", label: "Gemini 3.8 Flash TTS (text-to-speech)" },
+    { id: "gemini-2.5-flash", label: "Gemini 2.5 Flash (legacy)" }
+  ];
+
+  // AI Splash Timer
+  useEffect(() => {
+    const t = setTimeout(() => setShowSplash(false), 2500);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Auto-scroll chat
+  useEffect(() => {
+    if(chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, isTyping]);
+
+  // Speech Synthesis (Text-to-Speech)
+  const speakText = (text) => {
+    if (!('speechSynthesis' in window) || !isSpeakingEnabled) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+    const voices = window.speechSynthesis.getVoices();
+    const preferredVoice = voices.find(v => v.name.includes("Google") || v.name.includes("Natural")) || voices[0];
+    if (preferredVoice) utterance.voice = preferredVoice;
+    window.speechSynthesis.speak(utterance);
+  };
+
+  // Convert File -> raw base64 (no data: prefix)
+  const fileToBase64 = (file) => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(String(reader.result).split(',')[1]);
+    reader.onerror = reject;
+  });
+
+  const handleSend = async (text, type = "text", payload = null, file = null) => {
+    if(!text.trim() && !payload) return;
+
+    const userMsg = { id: Date.now(), sender: "user", text, type, image: payload };
+    setMessages(prev => [...prev, userMsg]);
+    setInput("");
+    setImagePreview(null);
+
+    // IMPORTANT: use the file passed in (not the stale state) when called from upload
+    const activeFile = file || imageFile;
+    setImageFile(null);
+    setIsTyping(true);
+
+    setTimeout(async () => {
+      let aiResponse = "";
+      let aiType = "text";
+      let aiData = null;
+
+      // ---------- REAL GEMINI CALL ----------
+      if (apiKey.trim().length > 10) {
+        try {
+          const parts = [{ text: text || "Describe this image." }];
+
+          // Attach image as inline_data if present
+          if (activeFile) {
+            try {
+              const base64 = await fileToBase64(activeFile);
+              parts.push({
+                inline_data: {
+                  mime_type: activeFile.type || "image/jpeg",
+                  data: base64
+                }
+              });
+            } catch (imgErr) {
+              console.warn("Could not convert image for Gemini:", imgErr);
+            }
+          }
+
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+          const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ contents: [{ parts }] })
+          });
+
+          const data = await response.json();
+
+          if (data.error) {
+            aiResponse = `API Error: ${data.error.message}. Please check your API key, model, or quota.`;
+          } else if (
+            data.candidates &&
+            data.candidates.length > 0 &&
+            data.candidates[0].content &&
+            data.candidates[0].content.parts &&
+            data.candidates[0].content.parts[0] &&
+            data.candidates[0].content.parts[0].text
+          ) {
+            aiResponse = data.candidates[0].content.parts[0].text;
+          } else {
+            aiResponse = "No response received from Gemini. The prompt may have been blocked by safety filters, or the response was empty.";
+          }
+        } catch (err) {
+          console.error(err);
+          aiResponse = `Oops! Something went wrong: ${err.message}`;
+        }
+      } else {
+        // ---------- SIMULATED DEMO MODE ----------
+        if (type === "image") {
+          aiResponse = "Oh, I see the image you uploaded! It looks like a physics problem involving vectors. The key concept here is resolving the forces into x and y components. Let me know if you want me to solve it step-by-step!";
+        } else if (text.toLowerCase().includes("flashcard")) {
+          aiResponse = "Here are some flashcards I generated for you based on Unit 1 of Physics. Take a look!";
+          aiType = "flashcards";
+          aiData = [
+            { front: "Scalar", back: "A quantity with magnitude only (e.g., mass, time)." },
+            { front: "Vector", back: "A quantity with magnitude and direction (e.g., velocity, force)." },
+            { front: "Newton's 1st Law", back: "A body remains at rest or in uniform motion unless acted upon by an external force." }
+          ];
+        } else if (text.toLowerCase().includes("summary") || text.toLowerCase().includes("notes")) {
+          aiResponse = "Sure thing! Here's a quick, easy-to-read summary of Limits & Derivatives:";
+          aiType = "summary";
+          aiData = [
+            "A limit describes the value a function approaches as the input approaches a point.",
+            "Standard limits: lim(x→0) sin x / x = 1.",
+            "Derivative measures the rate of change: f'(x) = lim(h→0) [f(x+h) - f(x)] / h.",
+            "Power rule: d/dx (xⁿ) = n·xⁿ⁻¹."
+          ];
+        } else if (text.toLowerCase().includes("hello") || text.toLowerCase().includes("hi")) {
+          aiResponse = "Hello Deepak! 👋 I'm so glad you're here. Ready to crush your study goals today? I can help you summarize notes, create flashcards, or explain a tricky concept.";
+        } else {
+          aiResponse = "That's a really great question! Based on the first-year engineering curriculum, I'd recommend focusing on the core principles first. Would you like me to generate a quick summary or a set of flashcards to help you revise?";
+        }
+      }
+
+      setMessages(prev => [...prev, { id: Date.now() + 1, sender: "ai", text: aiResponse, type: aiType, data: aiData }]);
+      setIsTyping(false);
+      speakText(aiResponse);
+    }, 1000);
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if(file) {
+      setImageFile(file);
+      const url = URL.createObjectURL(file);
+      setImagePreview(url);
+      // Pass the file explicitly so handleSend can use it immediately
+      handleSend("Analyze this image", "image", url, file);
+    }
+    // Allow re-uploading the same file
+    e.target.value = "";
+  };
+
+  return html`<div className="flex flex-col h-[calc(100vh-120px)] sm:h-[calc(100vh-100px)] relative bg-navy-50">
+    
+    <!-- AI Splash Overlay -->
+    <div className=${cx("ai-splash", !showSplash && "hide")}>
+      <div className="ai-splash-icon">
+        <${Icon} name="sparkles" className="h-10 w-10 text-white" strokeWidth=${2} />
+      </div>
+      <h1 className="ai-splash-title">StudySmart<span>.ai</span></h1>
+      <p className="ai-splash-sub">Powered by Gemini</p>
+    </div>
+
+    <!-- Settings Modal -->
+    <${Modal} open=${showSettings} onClose=${() => setShowSettings(false)}>
+      <div className="flex items-center gap-3 mb-4">
+        <div className="grid h-10 w-10 place-items-center rounded-xl bg-navy-100 text-navy-600">
+          <${Icon} name="settings" className="h-5 w-5" />
+        </div>
+        <div>
+          <h3 className="text-lg font-extrabold tracking-tight text-navy-900">AI Settings</h3>
+          <p className="text-[12px] text-navy-500">Configure your Gemini API key and model.</p>
+        </div>
+      </div>
+      
+      <div className="space-y-4">
+        <div>
+          <label className="mb-1.5 block text-[13px] font-bold text-navy-700">Gemini API Key</label>
+          <input 
+            type="password" 
+            value=${tempKey} 
+            onInput=${e => setTempKey(e.target.value)}
+            placeholder="AIza..." 
+            className="w-full rounded-xl border border-navy-200 px-4 py-3 text-sm outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15" 
+          />
+          <p className="mt-1.5 text-[11px] leading-4 text-navy-400">
+            Leave blank to use the simulated demo mode. Get a key at <a href="https://aistudio.google.com/app/apikey" target="_blank" className="text-brand-600 hover:underline">aistudio.google.com</a>.
+          </p>
+        </div>
+
+        <div>
+          <label className="mb-1.5 block text-[13px] font-bold text-navy-700">Model</label>
+          <select 
+            value=${tempModel} 
+            onChange=${e => setTempModel(e.target.value)}
+            className="w-full rounded-xl border border-navy-200 px-4 py-3 text-sm outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 bg-white"
+          >
+            ${GEMINI_MODELS.map(m => html`<option key=${m.id} value=${m.id}>${m.label}</option>`)}
+          </select>
+          <p className="mt-1.5 text-[11px] leading-4 text-navy-400">
+            Gemini 3.8 Flash (gemini-3.8-flash) is Google's latest general-purpose Flash model[reference:4].
+          </p>
+        </div>
+
+        <div className="flex items-center justify-between rounded-xl border border-navy-100 bg-navy-50/60 px-3.5 py-3">
+          <div className="flex items-center gap-2.5">
+            <${Icon} name="volume" className="h-4 w-4 text-navy-500" />
+            <div>
+              <p className="text-[13px] font-bold text-navy-800">Speak responses</p>
+              <p className="text-[11px] text-navy-500">Read AI answers out loud</p>
+            </div>
+          </div>
+          <button role="switch" aria-checked=${isSpeakingEnabled} onClick=${() => setIsSpeakingEnabled(!isSpeakingEnabled)}
+            className=${cx("relative h-6 w-11 shrink-0 rounded-full transition-colors", isSpeakingEnabled ? "bg-brand-600" : "bg-navy-200")}>
+            <span className=${cx("absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all", isSpeakingEnabled ? "left-[22px]" : "left-0.5")}></span>
+          </button>
+        </div>
+
+        <${Button} className="w-full" onClick=${() => { setApiKey(tempKey); setModel(tempModel); setShowSettings(false); toast("Settings saved"); }}>
+          Save Settings
+        </${Button}>
+      </div>
+    </${Modal}>
+
+    <!-- Chat Header -->
+    <div className="flex items-center justify-between px-4 py-3 border-b border-navy-100 bg-white shadow-sm z-10">
+      <div className="flex items-center gap-3">
+        <button onClick=${back} className="grid h-9 w-9 place-items-center rounded-lg bg-navy-50 text-navy-600 transition active:scale-95 hover:bg-navy-100">
+          <${Icon} name="chevronLeft" className="h-5 w-5" strokeWidth=${2.5} />
+        </button>
+        <div className="flex items-center gap-2">
+          <div className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-brand-500 to-violet-500 text-white shadow-sm">
+            <${Icon} name="ai" className="h-4 w-4" strokeWidth=${2} />
+          </div>
+          <div>
+            <h2 className="text-[14px] font-extrabold text-navy-900 leading-tight">StudySmart AI</h2>
+            <p className="text-[10px] font-semibold text-emerald-600 flex items-center gap-1">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Online · ${model}
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div className="flex items-center gap-1">
+        <button onClick=${() => setIsSpeakingEnabled(!isSpeakingEnabled)} className=${cx("grid h-8 w-8 place-items-center rounded-lg transition", isSpeakingEnabled ? "text-brand-600 bg-brand-50" : "text-navy-400 hover:bg-navy-50")} title="Toggle voice">
+          <${Icon} name=${isSpeakingEnabled ? "volume" : "volumeX"} className="h-4 w-4" />
+        </button>
+        <button onClick=${() => setShowSettings(true)} className="grid h-8 w-8 place-items-center rounded-lg text-navy-500 hover:bg-navy-50 transition" title="Settings">
+          <${Icon} name="settings" className="h-4 w-4" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Chat Messages -->
+    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      ${messages.map(msg => html`<div key=${msg.id} className=${cx("flex", msg.sender === "user" ? "justify-end" : "justify-start")}>
+        <div className=${cx("max-w-[85%] rounded-2xl px-4 py-3 shadow-sm",
+          msg.sender === "user" ? "bg-brand-600 text-white rounded-br-sm" : "bg-white border border-navy-100 text-navy-800 rounded-bl-sm")}>
+          
+          ${msg.image ? html`<img src=${msg.image} alt="Uploaded" className="w-full max-w-[200px] rounded-lg mb-2 object-cover" />` : null}
+          <p className="text-[13.5px] leading-relaxed whitespace-pre-wrap">${msg.text}</p>
+          
+          ${msg.type === "flashcards" ? html`<div className="mt-3 space-y-2">
+            ${msg.data.map((card, i) => html`<div key=${i} className="bg-navy-50 p-3 rounded-lg border border-navy-100">
+              <p className="text-[12px] font-bold text-brand-600 uppercase tracking-wide">${card.front}</p>
+              <p className="text-[12.5px] text-navy-700 mt-1">${card.back}</p>
+            </div>`)}
+          </div>` : null}
+
+          ${msg.type === "summary" ? html`<ul className="mt-3 space-y-1.5">
+            ${msg.data.map((point, i) => html`<li key=${i} className="flex gap-2 text-[12.5px] text-navy-700 leading-relaxed">
+              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-400"></span>
+              <span>${point}</span>
+            </li>`)}
+          </ul>` : null}
+
+        </div>
+      </div>`)}
+
+      ${isTyping ? html`<div className="flex justify-start">
+        <div className="bg-white border border-navy-100 rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm flex items-center gap-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-navy-300 animate-bounce" style=${{ animationDelay: '0ms' }}></span>
+          <span className="h-1.5 w-1.5 rounded-full bg-navy-300 animate-bounce" style=${{ animationDelay: '150ms' }}></span>
+          <span className="h-1.5 w-1.5 rounded-full bg-navy-300 animate-bounce" style=${{ animationDelay: '300ms' }}></span>
+        </div>
+      </div>` : null}
+      <div ref=${chatEndRef}></div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div className="px-3 pb-2 flex gap-2 overflow-x-auto no-scrollbar">
+      <button onClick=${() => handleSend("Generate flashcards for Physics Unit 1")} className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 bg-white border border-navy-200 rounded-full text-[11px] font-bold text-navy-600 shadow-sm hover:bg-navy-50 active:scale-95 transition">
+        <${Icon} name="layers" className="h-3.5 w-3.5 text-violet-500" /> Flashcards
+      </button>
+      <button onClick=${() => handleSend("Give me a quick summary of Limits and Derivatives")} className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 bg-white border border-navy-200 rounded-full text-[11px] font-bold text-navy-600 shadow-sm hover:bg-navy-50 active:scale-95 transition">
+        <${Icon} name="file" className="h-3.5 w-3.5 text-brand-500" /> Summary Notes
+      </button>
+    </div>
+
+    <!-- Input Area -->
+    <div className="p-3 bg-white border-t border-navy-100 safe-bottom">
+      ${imagePreview ? html`<div className="mb-2 relative inline-block">
+        <img src=${imagePreview} className="h-16 w-16 object-cover rounded-lg border border-navy-200" />
+        <button onClick=${() => { setImagePreview(null); setImageFile(null); }} className="absolute -top-2 -right-2 bg-rose-500 text-white rounded-full p-1 shadow-md">
+          <${Icon} name="x" className="h-3 w-3" strokeWidth=${3} />
+        </button>
+      </div>` : null}
+      
+      <form onSubmit=${(e) => { e.preventDefault(); handleSend(input); }} className="flex items-end gap-2">
+        <div className="flex-1 relative flex items-center bg-navy-50 rounded-xl border border-navy-200 focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-500/20 transition-all">
+          <button type="button" onClick=${() => fileInputRef.current?.click()} className="p-2.5 text-navy-400 hover:text-brand-600 transition" title="Upload Image">
+            <${Icon} name="image" className="h-5 w-5" />
+          </button>
+          <input type="file" accept="image/*" ref=${fileInputRef} onChange=${handleImageUpload} className="hidden" />
+          
+          <button type="button" onClick=${() => cameraInputRef.current?.click()} className="p-2.5 text-navy-400 hover:text-brand-600 transition" title="Take Photo">
+            <${Icon} name="camera" className="h-5 w-5" />
+          </button>
+          <input type="file" accept="image/*" capture="environment" ref=${cameraInputRef} onChange=${handleImageUpload} className="hidden" />
+
+          <input 
+            type="text" 
+            value=${input} 
+            onInput=${e => setInput(e.target.value)} 
+            placeholder="Ask a question..." 
+            className="flex-1 bg-transparent py-3 pr-2 text-[13.5px] outline-none placeholder:text-navy-400"
+          />
+        </div>
+        <button type="submit" disabled=${!input.trim() && !imagePreview} className="grid h-[46px] w-[46px] shrink-0 place-items-center rounded-xl bg-brand-600 text-white shadow-md shadow-brand-600/20 transition active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+          <${Icon} name="send" className="h-5 w-5" />
+        </button>
+      </form>
+    </div>
+  </div>`;
+}
+
+/* =========================================================
+   Welcome
+   ========================================================= */
+function Welcome(){
+  const { signIn, go } = useApp();
+  return html`<div className="relative min-h-screen overflow-hidden bg-navy-950 text-white">
+    <div className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-brand-600/30 blur-3xl"></div>
+    <div className="pointer-events-none absolute -right-24 top-40 h-80 w-80 rounded-full bg-violet-600/25 blur-3xl"></div>
+
+    <div className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col px-5 py-8 sm:px-6 lg:flex-row lg:items-center lg:gap-16 lg:py-16">
+      <div className="flex flex-1 flex-col anim-in">
+        <${Logo} dark=${true} size="lg" />
+
+        <div className="mt-8 sm:mt-10 lg:mt-14">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-brand-200 sm:text-[11px]">
+            <${Icon} name="sparkles" className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+            Student learning platform
+          </div>
+          <h1 className="mt-4 text-[1.9rem] font-extrabold leading-[1.12] tracking-tight sm:mt-5 sm:text-4xl lg:text-5xl">
+            Learn smarter.<br />
+            <span className="bg-gradient-to-r from-brand-300 via-brand-200 to-violet-300 bg-clip-text text-transparent">Anywhere. Anytime.</span>
+          </h1>
+          <p className="mt-3 max-w-md text-[14px] leading-6 text-navy-200 sm:mt-4 sm:text-[15px] sm:leading-7">
+            Subject-wise digital notes, e-books and interactive MCQ quizzes for first-year engineering — without the weight of printed coaching material.
+          </p>
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 gap-2.5 sm:mt-7 sm:max-w-md">
+          ${[
+            { icon:"file", text:"Unit-wise notes & e-books, readable offline in the app" },
+            { icon:"help", text:"Instant MCQ quizzes with scored explanations" },
+            { icon:"ai", text:"Interactive 3D models & AI study assistant" }
+          ].map(f => html`<div key=${f.text} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 sm:px-3.5 sm:py-3">
+            <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-brand-500/20 text-brand-200">
+              <${Icon} name=${f.icon} className="h-4 w-4" />
+            </div>
+            <span className="text-[12.5px] leading-5 text-navy-100 sm:text-[13px]">${f.text}</span>
+          </div>`)}
+        </div>
+
+        <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:max-w-md">
+          <${Button} size="lg" variant="primary" className="w-full" onClick=${() => signIn("subjects")}>
+            Explore Courses <${Icon} name="arrowRight" className="h-4 w-4" />
+          </${Button}>
+          <div className="flex gap-2 sm:gap-3">
+            <${Button} size="lg" variant="outline" className="flex-1 border-white/20 bg-white/5 text-white hover:border-white/30 hover:bg-white/10" onClick=${() => go("auth", { mode:"signin" })}>Sign in</${Button}>
+            <${Button} size="lg" variant="outline" className="flex-1 border-white/20 bg-white/5 text-white hover:border-white/30 hover:bg-white/10" onClick=${() => go("auth", { mode:"signup" })}>Create account</${Button}>
+          </div>
+        </div>
+
+        <div className="mt-6 flex items-center gap-2 text-[11px] text-navy-400 sm:mt-8">
+          <span className="h-1.5 w-1.5 rounded-full bg-brand-400"></span>
+          <span>Created by <strong className="text-brand-300">GROUP 1D</strong></span>
+        </div>
+        <p className="mt-2 max-w-md text-[10.5px] leading-5 text-navy-500 sm:text-[11px]">
+          Demo prototype for an academic entrepreneurship presentation. Sample educational content only.
+          No real payments, no university affiliation.
+        </p>
+      </div>
+
+      <div className="hidden flex-1 lg:block">
+        <div className="anim-in rounded-3xl border border-white/10 bg-white/[0.06] p-5 backdrop-blur">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold uppercase tracking-wider text-navy-300">Today</span>
+            <${Badge} tone="brand">Demo preview</${Badge}>
+          </div>
+          <div className="mt-4 rounded-2xl bg-white p-5 text-navy-900 shadow-lift">
+            <p className="text-xs font-semibold text-navy-500">Welcome back, Deepak 👋</p>
+            <p className="mt-1 text-lg font-extrabold tracking-tight">Daily goal · 2 of 3 tasks</p>
+            <div className="mt-4 flex items-center gap-4">
+              <${ProgressRing} value=${67} size=${72} stroke=${7}>
+                <span className="text-sm font-extrabold">67%</span>
+              </${ProgressRing}>
+              <div className="flex-1 space-y-2">
+                ${["Physics · Vectors note","Maths · Limits quiz","C · Arrays note"].map((t,i) => html`<div key=${t} className="flex items-center gap-2 text-[12px]">
+                  <span className=${cx("grid h-4 w-4 place-items-center rounded-full", i < 2 ? "bg-emerald-500 text-white" : "border border-navy-200")}>
+                    ${i < 2 ? html`<${Icon} name="check" className="h-2.5 w-2.5" strokeWidth=${3} />` : null}
+                  </span>
+                  <span className=${i < 2 ? "text-navy-500 line-through" : "text-navy-800 font-semibold"}>${t}</span>
+                </div>`)}
+              </div>
+            </div>
+          </div>
+          <div className="mt-3 grid grid-cols-2 gap-3">
+            <div className="rounded-2xl bg-white/10 p-4">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-navy-300">Quizzes</p>
+              <p className="mt-1 text-2xl font-extrabold">6</p>
+              <p className="text-[11px] text-navy-300">available in demo</p>
+            </div>
+            <div className="rounded-2xl bg-white/10 p-4">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-navy-300">Premium</p>
+              <p className="mt-1 text-2xl font-extrabold">₹49</p>
+              <p className="text-[11px] text-navy-300">per month · proposal</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* =========================================================
+   Auth
+   ========================================================= */
+function Auth(){
+  const { params, signIn, navigate, toast } = useApp();
+  const [mode, setMode] = useState(params.mode || "signin");
+  const [email, setEmail] = useState("deepak@studysmart.demo");
+  const [password, setPassword] = useState("demo1234");
+  const [name, setName] = useState("");
+  const [error, setError] = useState("");
+
+  const submit = (e) => {
+    e.preventDefault();
+    if(!email.trim() || !password.trim()){ setError("Please fill in both fields to continue."); return; }
+    if(!/^\S+@\S+\.\S+$/.test(email.trim())){ setError("Please enter a valid email address."); return; }
+    if(password.length < 4){ setError("Demo password should be at least 4 characters."); return; }
+    setError("");
+    signIn("dashboard");
+    toast(mode === "signup" ? "Demo account created — welcome to StudySmart!" : "Signed in as Demo Student");
+  };
+
+  return html`<div className="relative min-h-screen bg-navy-950 px-4 py-6 text-white sm:px-5 sm:py-8">
+    <div className="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full bg-brand-600/25 blur-3xl"></div>
+    <div className="pointer-events-none absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-violet-600/20 blur-3xl"></div>
+
+    <div className="relative mx-auto w-full max-w-md">
+      <button onClick=${() => navigate("welcome")}
+        className="mb-6 inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm font-semibold text-navy-300 transition hover:bg-white/10 hover:text-white active:scale-95 sm:mb-8">
+        <${Icon} name="chevronLeft" className="h-4 w-4" /> Back
+      </button>
+
+      <div className="anim-in rounded-3xl bg-white p-5 text-navy-900 shadow-lift sm:p-8">
+        <${Logo} size="lg" />
+        <h1 className="mt-5 text-xl font-extrabold tracking-tight sm:mt-6 sm:text-2xl">
+          ${mode === "signin" ? "Welcome back" : "Create your account"}
+        </h1>
+        <p className="mt-1.5 text-[13px] leading-6 text-navy-500 sm:text-sm">
+          ${mode === "signin" ? "Sign in to continue your learning. Demo mode — any valid email works." : "Set up a demo student profile. No real credentials are stored."}
+        </p>
+
+        <div className="mt-4 grid grid-cols-2 gap-1 rounded-xl bg-navy-50 p-1">
+          ${["signin","signup"].map(m => html`<button key=${m} onClick=${() => { setMode(m); setError(""); }}
+            className=${cx("rounded-lg py-2 text-[13px] font-bold transition active:scale-[0.97]",
+              mode === m ? "bg-white text-navy-900 shadow-soft" : "text-navy-500 hover:text-navy-700")}>
+            ${m === "signin" ? "Sign in" : "Create account"}
+          </button>`)}
+        </div>
+
+        <form onSubmit=${submit} className="mt-4 space-y-3.5" noValidate>
+          ${mode === "signup" ? html`<div>
+            <label htmlFor="name" className="mb-1.5 block text-[13px] font-bold text-navy-700">Full name</label>
+            <input id="name" value=${name} onInput=${e => setName(e.target.value)} placeholder="Your name"
+              className="w-full rounded-xl border border-navy-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15" />
+          </div>` : null}
+          <div>
+            <label htmlFor="email" className="mb-1.5 block text-[13px] font-bold text-navy-700">Email</label>
+            <input id="email" type="email" value=${email} onInput=${e => setEmail(e.target.value)}
+              className="w-full rounded-xl border border-navy-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15" />
+          </div>
+          <div>
+            <label htmlFor="password" className="mb-1.5 block text-[13px] font-bold text-navy-700">Password</label>
+            <input id="password" type="password" value=${password} onInput=${e => setPassword(e.target.value)}
+              className="w-full rounded-xl border border-navy-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15" />
+          </div>
+
+          ${error ? html`<div className="flex items-start gap-2 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-3 text-[13px] font-medium text-rose-700">
+            <${Icon} name="info" className="mt-0.5 h-4 w-4 shrink-0" /> ${error}
+          </div>` : null}
+
+          <${Button} type="submit" size="lg" variant="primary" className="w-full">
+            ${mode === "signin" ? "Sign in to StudySmart" : "Create demo account"} <${Icon} name="arrowRight" className="h-4 w-4" />
+          </${Button}>
+        </form>
+
+        <${Button} variant="subtle" size="md" className="mt-3 w-full" onClick=${() => signIn("dashboard")}>
+          <${Icon} name="sparkles" className="h-4 w-4" /> Continue with demo account
+        </${Button}>
+
+        <p className="mt-4 text-center text-[11px] leading-5 text-navy-400">
+          Prototype authentication. Credentials are not verified and nothing is sent to a server.
+        </p>
+        <p className="mt-2 text-center text-[10.5px] font-semibold uppercase tracking-widest text-navy-300">
+          Created by GROUP 1D
+        </p>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* =========================================================
+   Dashboard
+   ========================================================= */
+function Dashboard(){
+  const { user, recent, results, bookmarks, go, openNote, navigate, quizzes } = useApp();
+  const [q, setQ] = useState("");
+  const [showResults, setShowResults] = useState(false);
+  const firstName = (user.name || "Student").split(" ")[0];
+
+  const searchResults = useMemo(() => {
+    const term = q.trim().toLowerCase();
+    if(!term) return [];
+    const out = [];
+    ALL_SUBJECTS.forEach(s => {
+      if(s.name.toLowerCase().includes(term) || s.code.toLowerCase().includes(term)){
+        out.push({ kind:"subject", subject:s, label:s.name, sub:s.code + " · Subject" });
+      }
+      s.units.forEach(u => u.resources.forEach(r => {
+        if(r.title.toLowerCase().includes(term) || r.summary.toLowerCase().includes(term) || u.title.toLowerCase().includes(term)){
+          out.push({ kind:"note", subject:s, resource:r, label:r.title, sub:s.name + " · " + r.type });
+        }
+      }));
+    });
+    return out.slice(0, 8);
+  }, [q]);
+
+  const resultList = Object.values(results);
+  const quizzesDone = resultList.length;
+  const avgPct = quizzesDone ? Math.round(resultList.reduce((a,r) => a + (r.score/r.total)*100, 0) / quizzesDone) : 0;
+  const todayActivities = resultList.filter(r => isToday(r.at)).length + recent.filter(r => isToday(r.at)).length;
+  const dailyPct = Math.min(100, Math.round((todayActivities/3)*100));
+  const continueItem = recent[0] ? findResource(recent[0].subjectId, recent[0].noteId) : null;
+
+  const subjectProgress = (subject) => {
+    const total = subject.units.reduce((a,u) => a + u.resources.length, 0);
+    const opened = Math.min(recent.filter(r => r.subjectId === subject.id).length, total);
+    return { total, opened, pct: total ? Math.round((opened/total)*100) : 0 };
+  };
+
+  return html`<div className="anim-in space-y-5 sm:space-y-6">
+    <div>
+      <p className="text-[12px] font-semibold text-navy-500 sm:text-[13px]">
+        ${new Date().toLocaleDateString(undefined, { weekday:"long", day:"numeric", month:"short" })}
+      </p>
+      <h1 className="mt-0.5 text-[22px] font-extrabold leading-tight tracking-tight text-navy-900 sm:text-[26px]">
+        Welcome back, ${firstName}! <span className="inline-block">👋</span>
+      </h1>
+      <p className="mt-1 text-[13px] text-navy-500 sm:text-sm">Pick up where you left off, or start something new.</p>
+    </div>
+
+    <div className="relative">
+      <div className="relative">
+        <${Icon} name="search" className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-navy-400" />
+        <input value=${q}
+          onInput=${e => { setQ(e.target.value); setShowResults(true); }}
+          onFocus=${() => setShowResults(true)}
+          onBlur=${() => setTimeout(() => setShowResults(false), 160)}
+          placeholder="Search notes, subjects, quizzes…"
+          aria-label="Search notes and subjects"
+          className="w-full rounded-2xl border border-navy-200 bg-white py-3.5 pl-12 pr-4 text-sm shadow-soft outline-none transition placeholder:text-navy-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/12" />
+      </div>
+
+      ${showResults && q.trim() ? html`<${Card} className="absolute left-0 right-0 top-full z-30 mt-2 max-h-80 overflow-y-auto p-1.5">
+        ${searchResults.length === 0
+          ? html`<div className="px-4 py-6 text-center">
+              <p className="text-sm font-semibold text-navy-700">No matches for “${q}”</p>
+              <p className="mt-1 text-[13px] text-navy-500">Try “vectors”, “limits”, “arrays” or “Ohm”.</p>
+            </div>`
+          : searchResults.map((r,i) => html`<button key=${i}
+              onMouseDown=${e => e.preventDefault()}
+              onClick=${() => {
+                setShowResults(false); setQ("");
+                if(r.kind === "subject") go("subject", { subjectId: r.subject.id });
+                else openNote(r.subject.id, r.resource.id);
+              }}
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition hover:bg-navy-50 active:bg-navy-100">
+              <div className=${cx("grid h-9 w-9 shrink-0 place-items-center rounded-lg", TINTS[r.subject.tint].bg, TINTS[r.subject.tint].text)}>
+                <${Icon} name=${r.kind === "subject" ? r.subject.icon : "file"} className="h-4 w-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[13px] font-bold text-navy-900">${r.label}</p>
+                <p className="truncate text-[11px] text-navy-500">${r.sub}</p>
+              </div>
+              <${Icon} name="chevronRight" className="h-4 w-4 shrink-0 text-navy-300" />
+            </button>`)}
+      </${Card}>` : null}
+    </div>
+
+    <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
+      ${[
+        { icon:"file", label:"Notes", screen:"subjects", tone:"bg-brand-50 text-brand-600" },
+        { icon:"help", label:"Quizzes", screen:"quizzes", tone:"bg-violet-50 text-violet-600" },
+        { icon:"bookmark", label:"My Library", screen:"library", tone:"bg-emerald-50 text-emerald-600" }
+      ].map(a => html`<button key=${a.label} onClick=${() => navigate(a.screen)}
+        className="group flex flex-col items-center gap-2 rounded-2xl border border-navy-100 bg-white py-3.5 shadow-soft transition hover:-translate-y-0.5 hover:border-navy-200 hover:shadow-lift active:translate-y-0 active:scale-[0.98] sm:py-4">
+        <span className=${cx("grid h-11 w-11 place-items-center rounded-xl transition group-hover:scale-105", a.tone)}>
+          <${Icon} name=${a.icon} className="h-5 w-5" />
+        </span>
+        <span className="text-[11.5px] font-bold text-navy-700 sm:text-[12px]">${a.label}</span>
+      </button>`)}
+    </div>
+
+    <div className="grid gap-3 sm:grid-cols-5">
+      <${Card} className="p-4 sm:p-5 sm:col-span-3">
+        <div className="flex items-center gap-4 sm:gap-5">
+          <${ProgressRing} value=${dailyPct} size=${92} stroke=${9}>
+            <span className="text-lg font-extrabold text-navy-900">${dailyPct}%</span>
+            <span className="text-[10px] font-semibold uppercase tracking-wide text-navy-400">today</span>
+          </${ProgressRing}>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <h3 className="text-[14px] font-extrabold text-navy-900 sm:text-[15px]">Daily learning goal</h3>
+              <${Icon} name="flame" className="h-4 w-4 text-orange-500" />
+            </div>
+            <p className="mt-1 text-[12.5px] leading-5 text-navy-500 sm:text-[13px]">
+              ${todayActivities >= 3 ? "Goal complete — nicely done today." : todayActivities + " of 3 activities done. Open a note or attempt a quiz."}
+            </p>
+            <div className="mt-2.5 flex flex-wrap gap-1.5 sm:mt-3 sm:gap-2">
+              <${Badge} tone="brand">${quizzesDone} quizzes</${Badge}>
+              <${Badge} tone="green">${avgPct}% avg</${Badge}>
+              <${Badge} tone="violet">${bookmarks.length} saved</${Badge}>
+            </div>
+          </div>
+        </div>
+      </${Card}>
+
+      <${Card} className="flex flex-col justify-between p-4 sm:p-5 sm:col-span-2">
+        <div className="flex items-center justify-between">
+          <h3 className="text-[14px] font-extrabold text-navy-900 sm:text-[15px]">Quiz statistics</h3>
+          <${Icon} name="chart" className="h-4 w-4 text-navy-400" />
+        </div>
+        <div className="mt-3 grid grid-cols-2 gap-3">
+          <div>
+            <p className="text-xl font-extrabold tracking-tight text-navy-900 sm:text-2xl">${quizzesDone}<span className="text-sm font-bold text-navy-400">/${Object.keys(QUIZZES).length}</span></p>
+            <p className="text-[10.5px] font-semibold uppercase tracking-wide text-navy-400">Completed</p>
+          </div>
+          <div>
+            <p className="text-xl font-extrabold tracking-tight text-brand-600 sm:text-2xl">${avgPct}%</p>
+            <p className="text-[10.5px] font-semibold uppercase tracking-wide text-navy-400">Average</p>
+          </div>
+        </div>
+        <${Button} variant="subtle" size="sm" className="mt-3 w-full sm:mt-4" onClick=${() => navigate("quizzes")}>
+          Go to quizzes <${Icon} name="arrowRight" className="h-3.5 w-3.5" />
+        </${Button}>
+      </${Card}>
+    </div>
+
+    <div>
+      <${SectionTitle} action=${html`<button onClick=${() => navigate("subjects")} className="text-[12px] font-bold text-brand-600 hover:text-brand-700 active:opacity-70">Browse all</button>`}>
+        Continue learning
+      </${SectionTitle}>
+      ${continueItem ? html`<${Card} className="overflow-hidden">
+        <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-4 sm:p-5">
+          <div className=${cx("grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br text-white shadow-lg sm:h-14 sm:w-14", TINTS[continueItem.subject.tint].grad)}>
+            <${Icon} name="play" className="h-5 w-5 sm:h-6 sm:w-6" strokeWidth=${2} filled=${true} />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <${Badge} tone="brand">${continueItem.subject.name}</${Badge}>
+              <span className="text-[11px] font-semibold text-navy-400">${continueItem.unit.title}</span>
+            </div>
+            <h3 className="mt-1 truncate text-[14px] font-extrabold text-navy-900 sm:mt-1.5 sm:text-[15px]">${continueItem.resource.title}</h3>
+            <p className="mt-0.5 text-[11.5px] text-navy-500 sm:text-[12px]">Opened ${timeAgo(recent[0].at)} · ${continueItem.resource.minutes} min read</p>
+          </div>
+          <${Button} onClick=${() => openNote(continueItem.subject.id, continueItem.resource.id)} className="shrink-0">
+            Resume <${Icon} name="arrowRight" className="h-4 w-4" />
+          </${Button}>
+        </div>
+      </${Card}>` : html`<${EmptyState} icon="book" title="Nothing in progress yet"
+        message="Open a note to start learning. Everything you read shows up here so you can jump straight back in."
+        action=${html`<${Button} onClick=${() => navigate("subjects")}>Browse subjects <${Icon} name="arrowRight" className="h-4 w-4" /></${Button}>`} />`}
+    </div>
+
+    <div>
+      <${SectionTitle}>Your subjects</${SectionTitle}>
+      <div className="grid gap-2.5 sm:grid-cols-2 sm:gap-3">
+        ${ALL_SUBJECTS.slice(0,6).map(s => {
+          const prog = subjectProgress(s);
+          const tint = TINTS[s.tint];
+          return html`<button key=${s.id} onClick=${() => go("subject", { subjectId: s.id })}
+            className="group rounded-2xl border border-navy-100 bg-white p-3.5 text-left shadow-soft transition hover:-translate-y-0.5 hover:border-navy-200 hover:shadow-lift active:translate-y-0 active:scale-[0.99] sm:p-4">
+            <div className="flex items-start gap-3">
+              <div className=${cx("grid h-10 w-10 shrink-0 place-items-center rounded-xl sm:h-11 sm:w-11", tint.bg, tint.text)}>
+                <${Icon} name=${s.icon} className="h-5 w-5" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[13.5px] font-extrabold text-navy-900 sm:text-[14px]">${s.name}</p>
+                <p className="text-[10.5px] font-semibold uppercase tracking-wide text-navy-400">${s.code}</p>
+              </div>
+              <${Icon} name="chevronRight" className="h-4 w-4 text-navy-300 transition group-hover:translate-x-0.5 group-hover:text-navy-500" />
+            </div>
+            <p className="mt-2.5 line-clamp-2 text-[12px] leading-5 text-navy-500 sm:mt-3 sm:text-[12.5px]">${s.desc}</p>
+            <div className="mt-2.5 flex items-center gap-2 sm:mt-3">
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-navy-100">
+                <div className=${cx("h-full rounded-full bg-gradient-to-r transition-all duration-700", tint.grad)} style=${{ width: prog.pct + "%" }}></div>
+              </div>
+              <span className="text-[10.5px] font-bold text-navy-500 sm:text-[11px]">${prog.opened}/${prog.total}</span>
+            </div>
+          </button>`;
+        })}
+      </div>
+      <button onClick=${() => navigate("subjects")} className="mt-3 w-full rounded-xl border border-navy-200 bg-white py-2.5 text-[13px] font-bold text-navy-600 transition hover:bg-navy-50 active:scale-[0.98]">
+        View all ${ALL_SUBJECTS.length} subjects
+      </button>
+    </div>
+
+    <div>
+      <${SectionTitle} action=${html`<button onClick=${() => navigate("library")} className="text-[12px] font-bold text-brand-600 hover:text-brand-700 active:opacity-70">View library</button>`}>Recently opened</${SectionTitle}>
+      ${recent.length === 0
+        ? html`<${Card} className="p-5 text-center text-sm text-navy-500">Notes you open will appear here.</${Card}>`
+        : html`<div className="space-y-2">
+            ${recent.slice(0,3).map(item => {
+              const found = findResource(item.subjectId, item.noteId);
+              if(!found) return null;
+              const tint = TINTS[found.subject.tint];
+              return html`<button key=${item.subjectId + item.noteId} onClick=${() => openNote(item.subjectId, item.noteId)}
+                className="flex w-full items-center gap-3 rounded-2xl border border-navy-100 bg-white p-3.5 text-left shadow-soft transition hover:border-navy-200 hover:shadow-lift active:scale-[0.99]">
+                <div className=${cx("grid h-10 w-10 shrink-0 place-items-center rounded-xl", tint.bg, tint.text)}>
+                  <${Icon} name="file" className="h-4 w-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-[13px] font-bold text-navy-900 sm:text-[13.5px]">${found.resource.title}</p>
+                  <p className="text-[11px] text-navy-500 sm:text-[11.5px]">${found.subject.name} · ${found.resource.minutes} min · ${timeAgo(item.at)}</p>
+                </div>
+                <${Icon} name="chevronRight" className="h-4 w-4 shrink-0 text-navy-300" />
+              </button>`;
+            })}
+          </div>`}
+    </div>
+  </div>`;
+}
+
+/* =========================================================
+   Subjects
+   ========================================================= */
+function Subjects(){
+  const { go, recent } = useApp();
+  const [q, setQ] = useState("");
+  const [filter, setFilter] = useState("all");
+
+  const filtered = ALL_SUBJECTS.filter(s => {
+    const matchesQ = (s.name + " " + s.code + " " + s.desc).toLowerCase().includes(q.trim().toLowerCase());
+    const matchesFilter = filter === "all" || s.category === filter;
+    return matchesQ && matchesFilter;
+  });
+
+  return html`<div className="anim-in space-y-5">
+    <div>
+      <h1 className="text-[22px] font-extrabold tracking-tight text-navy-900 sm:text-[26px]">Subjects</h1>
+      <p className="mt-1 text-[13px] text-navy-500 sm:text-sm">Browse our full library of ${ALL_SUBJECTS.length} subjects.</p>
+    </div>
+
+    <div className="space-y-3">
+      <div className="relative">
+        <${Icon} name="search" className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-navy-400" />
+        <input value=${q} onInput=${e => setQ(e.target.value)} placeholder="Filter subjects…" aria-label="Filter subjects"
+          className="w-full rounded-2xl border border-navy-200 bg-white py-3.5 pl-12 pr-4 text-sm shadow-soft outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/12" />
+      </div>
+      
+      <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
+        ${[
+          { id:"all", label:"All" },
+          { id:"engineering", label:"Engineering" },
+          { id:"professional", label:"Professional" }
+        ].map(f => html`<button key=${f.id} onClick=${() => setFilter(f.id)}
+          className=${cx("shrink-0 rounded-full px-3.5 py-1.5 text-[12px] font-bold transition active:scale-95",
+            filter === f.id ? "bg-navy-900 text-white" : "bg-white text-navy-600 border border-navy-200 hover:bg-navy-50")}>
+          ${f.label}
+        </button>`)}
+      </div>
+    </div>
+
+    ${filtered.length === 0
+      ? html`<${EmptyState} icon="search" title="No subjects match that" message="Try a different search term or filter."
+          action=${html`<${Button} variant="outline" onClick=${() => { setQ(""); setFilter("all"); }}>Clear filters</${Button}>`} />`
+      : html`<div className="space-y-3">
+          ${filtered.map(s => {
+            const tint = TINTS[s.tint];
+            const total = s.units.reduce((a,u) => a + u.resources.length, 0);
+            const opened = Math.min(recent.filter(r => r.subjectId === s.id).length, total);
+            return html`<${Card} key=${s.id} className="overflow-hidden">
+              <button onClick=${() => go("subject", { subjectId: s.id })}
+                className="w-full p-4 text-left transition hover:bg-navy-50/40 active:bg-navy-100/60 sm:p-5">
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className=${cx("grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br text-white shadow-lg sm:h-12 sm:w-12", tint.grad)}>
+                    <${Icon} name=${s.icon} className="h-5 w-5 sm:h-6 sm:w-6" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h2 className="truncate text-[14.5px] font-extrabold text-navy-900 sm:text-[15.5px]">${s.name}</h2>
+                      <${Badge} tone="navy">${s.code}</${Badge}>
+                    </div>
+                    <p className="mt-1 text-[12.5px] leading-5 text-navy-500 sm:text-[13px]">${s.desc}</p>
+                    <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-semibold text-navy-400 sm:text-[11.5px]">
+                      <span className="inline-flex items-center gap-1"><${Icon} name="file" className="h-3.5 w-3.5" />${total} resources</span>
+                      <span className="inline-flex items-center gap-1"><${Icon} name="grid" className="h-3.5 w-3.5" />${s.units.length} unit</span>
+                      <span className="inline-flex items-center gap-1"><${Icon} name="check" className="h-3.5 w-3.5" />${opened} opened</span>
+                    </div>
+                  </div>
+                  <${Icon} name="chevronRight" className="mt-1 h-5 w-5 shrink-0 text-navy-300" />
+                </div>
+              </button>
+            </${Card}>`;
+          })}
+        </div>`}
+  </div>`;
+}
+
+/* =========================================================
+   Subject detail
+   ========================================================= */
+function SubjectDetail(){
+  const { params, openNote, bookmarks, toggleBookmark, go, premium, recent } = useApp();
+  const subject = findSubject(params.subjectId);
+
+  if(!subject){
+    return html`<${EmptyState} icon="info" title="Subject not found"
+      message="This subject is not part of the demo library."
+      action=${html`<${Button} onClick=${() => go("subjects")}>Back to subjects</${Button}>`} />`;
+  }
+
+  const tint = TINTS[subject.tint];
+  const total = subject.units.reduce((a,u) => a + u.resources.length, 0);
+  const opened = Math.min(recent.filter(r => r.subjectId === subject.id).length, total);
+
+  return html`<div className="anim-in space-y-4 sm:space-y-5">
+    <button onClick=${() => go("subjects")}
+      className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-500 transition hover:text-navy-800 active:opacity-70">
+      <${Icon} name="chevronLeft" className="h-4 w-4" /> All subjects
+    </button>
+
+    <div className=${cx("relative overflow-hidden rounded-3xl bg-gradient-to-br p-5 text-white shadow-lift sm:p-6", tint.grad)}>
+      <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/15 blur-2xl"></div>
+      <div className="relative flex items-start gap-3 sm:gap-4">
+        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/20 backdrop-blur sm:h-14 sm:w-14">
+          <${Icon} name=${subject.icon} className="h-6 w-6 sm:h-7 sm:w-7" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[10.5px] font-bold uppercase tracking-widest text-white/70 sm:text-[11px]">${subject.code}</p>
+          <h1 className="mt-0.5 text-lg font-extrabold leading-tight tracking-tight sm:text-xl">${subject.name}</h1>
+          <p className="mt-1 text-[12.5px] leading-5 text-white/85 sm:text-[13px]">${subject.desc}</p>
+        </div>
+      </div>
+      <div className="relative mt-4 flex items-center gap-3 rounded-xl bg-white/15 px-3.5 py-2.5 backdrop-blur sm:mt-5">
+        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/25">
+          <div className="h-full rounded-full bg-white transition-all duration-700" style=${{ width: (total ? (opened/total)*100 : 0) + "%" }}></div>
+        </div>
+        <span className="text-[11.5px] font-bold">${opened}/${total} opened</span>
+      </div>
+    </div>
+
+    ${subject.units.map(unit => html`<div key=${unit.id}>
+      <${SectionTitle}>${unit.title}</${SectionTitle}>
+      <div className="space-y-2.5">
+        ${unit.resources.map(r => {
+          const saved = bookmarks.includes(KEY(subject.id, r.id));
+          const locked = !r.free && !premium;
+          return html`<${Card} key=${r.id} className="p-3.5 sm:p-4">
+            <div className="flex items-start gap-3">
+              <div className=${cx("grid h-10 w-10 shrink-0 place-items-center rounded-xl", locked ? "bg-navy-100 text-navy-400" : cx(tint.bg, tint.text))}>
+                <${Icon} name=${locked ? "lock" : "file"} className="h-4 w-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <h3 className="text-[13.5px] font-extrabold leading-snug text-navy-900 sm:text-[14px]">${r.title}</h3>
+                  ${r.free ? html`<${Badge} tone="green">Free</${Badge}>` : html`<${Badge} tone="gold"><${Icon} name="crown" className="h-3 w-3" />Premium</${Badge}>`}
+                </div>
+                <p className="mt-1 text-[12px] leading-5 text-navy-500 sm:text-[12.5px]">${r.summary}</p>
+                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-semibold text-navy-400">
+                  <span className="inline-flex items-center gap-1"><${Icon} name="file" className="h-3.5 w-3.5" />${r.type}</span>
+                  <span className="inline-flex items-center gap-1"><${Icon} name="clock" className="h-3.5 w-3.5" />${r.minutes} min read</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-3 flex items-center gap-2">
+              <${Button} size="sm" variant=${locked ? "outline" : "primary"} className="flex-1"
+                onClick=${() => openNote(subject.id, r.id)}>
+                ${locked
+                  ? html`<${Icon} name="lock" className="h-3.5 w-3.5" />Unlock`
+                  : html`<${Icon} name="play" className="h-3.5 w-3.5" />Read`}
+              </${Button}>
+              ${r.has3D && !locked ? html`
+                <${Button} size="sm" variant="outline" className="flex-1 border-violet-200 text-violet-700 bg-violet-50 hover:bg-violet-100"
+                  onClick=${() => go("3d-model", { subjectId: subject.id, noteId: r.id, title: r.title })}>
+                  <${Icon} name="cube" className="h-3.5 w-3.5" /> 3D Study
+                </${Button}>
+              ` : null}
+              <button onClick=${() => toggleBookmark(subject.id, r.id)}
+                aria-label=${saved ? "Remove bookmark" : "Bookmark this note"}
+                aria-pressed=${saved}
+                className=${cx("grid h-[40px] w-[40px] shrink-0 place-items-center rounded-xl border transition active:scale-95",
+                  saved ? "border-brand-200 bg-brand-50 text-brand-600" : "border-navy-200 text-navy-400 hover:border-navy-300 hover:text-navy-600")}>
+                <${Icon} name="bookmark" className="h-4 w-4" filled=${saved} strokeWidth=${saved ? 1 : 1.8} />
+              </button>
+            </div>
+          </${Card}>`;
+        })}
+      </div>
+    </div>`)}
+
+    <${Card} className="flex items-center gap-3 bg-navy-900 p-4 text-white sm:p-5">
+      <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/10">
+        <${Icon} name="help" className="h-5 w-5 text-brand-200" />
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="text-[13px] font-bold sm:text-[13.5px]">Test yourself on ${subject.name}</p>
+        <p className="text-[11px] text-navy-300 sm:text-[11.5px]">Instant score with explanations</p>
+      </div>
+      <${Button} size="sm" variant="white" onClick=${() => go("quiz", { subjectId: subject.id })}>Start</${Button}>
+    </${Card}>
+  </div>`;
+}
+
+/* =========================================================
+   3D Viewer
+   ========================================================= */
+function ThreeDViewer() {
+  const { params, back } = useApp();
+  const found = findResource(params.subjectId, params.noteId);
+
+  if(!found) {
+    return html`<${EmptyState} icon="info" title="Model not found" message="Could not load the 3D model for this note."
+      action=${html`<${Button} onClick=${back}>Go back</${Button}>`} />`;
+  }
+
+  return html`<div className="anim-in flex flex-col h-[calc(100vh-140px)]">
+    <div className="flex items-center gap-3 mb-4">
+      <button onClick=${back} className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-500 transition hover:text-navy-800 active:opacity-70">
+        <${Icon} name="chevronLeft" className="h-4 w-4" /> Back
+      </button>
+      <${Badge} tone="violet">Interactive 3D</${Badge}>
+    </div>
+
+    <h1 className="text-xl font-extrabold tracking-tight text-navy-900 mb-1">${params.title}</h1>
+    <p className="text-sm text-navy-500 mb-6">${found.subject.name} · ${found.unit.title}</p>
+
+    <div className="flex-1 relative flex items-center justify-center rounded-3xl bg-navy-950 overflow-hidden shadow-lift border border-navy-800">
+      <!-- Background grid -->
+      <div className="absolute inset-0 opacity-20" style=${{ 
+        backgroundImage: 'linear-gradient(#3b66ff 1px, transparent 1px), linear-gradient(90deg, #3b66ff 1px, transparent 1px)', 
+        backgroundSize: '40px 40px' 
+      }}></div>
+
+      <!-- 3D Scene -->
+      <div className="scene relative z-10">
+        <div className="cube">
+          <div className="cube-face front">${found.subject.name}</div>
+          <div className="cube-face back">3D Model</div>
+          <div className="cube-face right">Interactive</div>
+          <div className="cube-face left">StudySmart</div>
+          <div className="cube-face top">Preview</div>
+          <div className="cube-face bottom">${found.subject.code}</div>
+        </div>
+      </div>
+      
+      <!-- Controls overlay -->
+      <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white z-20">
+        <div className="bg-black/50 backdrop-blur px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Live 3D View
+        </div>
+        <button onClick=${() => window.alert('In a production app, this would let you view the 3D model in Augmented Reality (AR) through your camera.')} 
+          className="bg-brand-600 hover:bg-brand-700 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-lg shadow-brand-600/30">
+          <${Icon} name="sparkles" className="h-3.5 w-3.5" />
+          View in AR
+        </button>
+      </div>
+    </div>
+
+    <div className="mt-4 p-4 rounded-2xl border border-violet-100 bg-violet-50">
+      <div className="flex gap-3">
+        <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-violet-200 text-violet-700">
+          <${Icon} name="cube" className="h-4 w-4" />
+        </div>
+        <div>
+          <p className="text-[13px] font-bold text-violet-900">3D Visualisation Mode</p>
+          <p className="mt-0.5 text-[12px] leading-5 text-violet-700">
+            Rotate and zoom to understand the spatial structure of this concept. This helps visualise complex engineering and scientific models.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* =========================================================
+   Note reader
+   ========================================================= */
+function NoteReader(){
+  const { params, go, back, bookmarks, toggleBookmark, toast, premium } = useApp();
+  const found = findResource(params.subjectId, params.noteId);
+
+  if(!found){
+    return html`<${EmptyState} icon="info" title="Note not available"
+      message="We could not load this note. It may have been removed from the demo library."
+      action=${html`<${Button} onClick=${() => go("subjects")}>Back to subjects</${Button}>`} />`;
+  }
+
+  const { subject, unit, resource } = found;
+  const saved = bookmarks.includes(KEY(subject.id, resource.id));
+  const tint = TINTS[subject.tint];
+
+  const download = () => {
+    const lines = [
+      "StudySmart — Demo Note",
+      "======================",
+      subject.name + " (" + subject.code + ")",
+      unit.title, resource.title,
+      resource.minutes + " min read · " + resource.type,
+      "",
+      ...resource.content.flatMap(b => {
+        if(b.t === "h") return ["", b.text.toUpperCase(), ""];
+        if(b.t === "p") return [b.text, ""];
+        if(b.t === "list") return b.items.map(i => "  • " + i).concat([""]);
+        if(b.t === "formula") return ["  " + b.text, ""];
+        if(b.t === "note") return ["  > " + b.text, ""];
+        return [];
+      }),
+      "",
+      "Demonstration content created for the StudySmart prototype."
+    ];
+    const blob = new Blob([lines.join("\n")], { type:"text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = resource.title.replace(/[^a-z0-9]+/gi, "-").toLowerCase() + "-studysmart.txt";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    toast("Demo note downloaded as a text file");
+  };
+
+  return html`<div className="anim-in pb-4">
+    <button onClick=${back}
+      className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-500 transition hover:text-navy-800 active:opacity-70">
+      <${Icon} name="chevronLeft" className="h-4 w-4" /> Back
+    </button>
+
+    <div className="mt-3 flex flex-wrap items-center gap-2">
+      <${Badge} tone="brand">${subject.name}</${Badge}>
+      <span className="text-[11px] font-semibold text-navy-400 sm:text-[11.5px]">${unit.title}</span>
+      ${resource.free ? html`<${Badge} tone="green">Free</${Badge}>` : html`<${Badge} tone="gold"><${Icon} name="crown" className="h-3 w-3" />Premium</${Badge}>`}
+    </div>
+
+    <h1 className="mt-2 text-[20px] font-extrabold leading-tight tracking-tight text-navy-900 sm:text-[24px]">${resource.title}</h1>
+    <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11.5px] font-semibold text-navy-400 sm:text-[12px]">
+      <span className="inline-flex items-center gap-1"><${Icon} name="file" className="h-3.5 w-3.5" />${resource.type}</span>
+      <span className="inline-flex items-center gap-1"><${Icon} name="clock" className="h-3.5 w-3.5" />${resource.minutes} min read</span>
+      <span className="inline-flex items-center gap-1"><${Icon} name="check" className="h-3.5 w-3.5" />Demo content</span>
+    </div>
+
+    <div className="mt-4 flex flex-wrap gap-2">
+      <${Button} variant=${saved ? "subtle" : "outline"} size="sm" onClick=${() => toggleBookmark(subject.id, resource.id)} className="flex-1">
+        <${Icon} name="bookmark" className="h-4 w-4" filled=${saved} strokeWidth=${saved ? 1 : 1.8} />
+        ${saved ? "Bookmarked" : "Bookmark"}
+      </${Button}>
+      ${resource.has3D && (resource.free || premium) ? html`
+        <${Button} variant="outline" size="sm" className="flex-1 border-violet-200 text-violet-700 bg-violet-50 hover:bg-violet-100" onClick=${() => go("3d-model", { subjectId: subject.id, noteId: resource.id, title: resource.title })}>
+          <${Icon} name="cube" className="h-4 w-4" /> 3D Study
+        </${Button}>
+      ` : null}
+      <${Button} variant="outline" size="sm" onClick=${download} className="flex-1">
+        <${Icon} name="download" className="h-4 w-4" /> Download
+      </${Button}>
+    </div>
+
+    <${Card} className="mt-4 p-4 sm:mt-5 sm:p-7">
+      ${resource.content.map((b, i) => {
+        if(b.t === "h") return html`<h3 key=${i} className="mb-2 mt-5 text-[14.5px] font-extrabold text-navy-900 first:mt-0 sm:mt-6 sm:text-[15.5px]">${b.text}</h3>`;
+        if(b.t === "p") return html`<p key=${i} className="mb-3 text-[13.5px] leading-6 text-navy-700 sm:text-[14.5px] sm:leading-7">${b.text}</p>`;
+        if(b.t === "list") return html`<ul key=${i} className="mb-4 space-y-2">
+          ${b.items.map((it, j) => html`<li key=${j} className="flex gap-2.5 text-[13.5px] leading-6 text-navy-700 sm:text-[14.5px] sm:leading-7">
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-400"></span>
+            <span>${it}</span>
+          </li>`)}
+        </ul>`;
+        if(b.t === "formula") return html`<div key=${i} className="mb-3.5 whitespace-pre-line overflow-x-auto rounded-xl border border-brand-100 bg-brand-50/70 px-3 py-2.5 font-mono text-[12px] leading-6 text-navy-900 sm:px-4 sm:py-3 sm:text-[13px]">${b.text}</div>`;
+        if(b.t === "note") return html`<div key=${i} className="mb-3.5 flex gap-2.5 rounded-xl border border-violet-200 bg-violet-50 p-3 sm:mb-4 sm:p-3.5">
+          <${Icon} name="info" className="mt-0.5 h-4 w-4 shrink-0 text-violet-500" />
+          <p className="text-[12.5px] leading-5 text-violet-900 sm:text-[13px] sm:leading-6">${b.text}</p>
+        </div>`;
+        return null;
+      })}
+    </${Card}>
+
+    <${Card} className="mt-3 flex items-center gap-3 p-3.5 sm:mt-4 sm:p-4">
+      <div className=${cx("grid h-10 w-10 shrink-0 place-items-center rounded-xl", tint.bg, tint.text)}>
+        <${Icon} name="help" className="h-5 w-5" />
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="text-[13px] font-bold text-navy-900 sm:text-[13.5px]">Ready to test yourself?</p>
+        <p className="text-[11px] text-navy-500 sm:text-[11.5px]">MCQs on ${subject.name} · instant feedback</p>
+      </div>
+      <${Button} size="sm" onClick=${() => go("quiz", { subjectId: subject.id })}>Start quiz</${Button}>
+    </${Card}>
+
+    ${!premium ? html`<button onClick=${() => go("premium")}
+      className="mt-3 w-full rounded-2xl border border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 p-3.5 text-left transition hover:brightness-[0.98] active:scale-[0.99] sm:mt-4 sm:p-4">
+      <div className="flex items-center gap-3">
+        <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-white">
+          <${Icon} name="crown" className="h-4 w-4" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[12.5px] font-extrabold text-navy-900 sm:text-[13px]">Unlock every note & practice pack</p>
+          <p className="text-[11px] text-navy-500 sm:text-[11.5px]">StudySmart Premium · ₹49/month (proposal)</p>
+        </div>
+        <${Icon} name="arrowRight" className="h-4 w-4 shrink-0 text-navy-400" />
+      </div>
+    </button>` : null}
+  </div>`;
+}
+
+/* =========================================================
+   Quizzes list
+   ========================================================= */
+function Quizzes(){
+  const { go, results, premium } = useApp();
+  const done = Object.keys(results).length;
+
+  return html`<div className="anim-in space-y-5">
+    <div>
+      <h1 className="text-[22px] font-extrabold tracking-tight text-navy-900 sm:text-[26px]">Quizzes</h1>
+      <p className="mt-1 text-[13px] text-navy-500 sm:text-sm">Five questions per subject · scored instantly with explanations.</p>
+    </div>
+
+    <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
+      ${[
+        { label:"Available", value:Object.keys(QUIZZES).length, icon:"help", tone:"text-brand-600" },
+        { label:"Completed", value:done, icon:"check", tone:"text-emerald-600" },
+        { label:"Best score", value: done ? Math.max(...Object.values(results).map(r => Math.round((r.score/r.total)*100))) + "%" : "—", icon:"trophy", tone:"text-amber-600" }
+      ].map(s => html`<${Card} key=${s.label} className="p-3 text-center sm:p-4">
+        <${Icon} name=${s.icon} className=${cx("mx-auto h-5 w-5", s.tone)} />
+        <p className="mt-1.5 text-base font-extrabold text-navy-900 sm:text-lg">${s.value}</p>
+        <p className="text-[10px] font-bold uppercase tracking-wide text-navy-400 sm:text-[10.5px]">${s.label}</p>
+      </${Card}>`)}
+    </div>
+
+    <div className="space-y-2.5 sm:space-y-3">
+      ${ALL_SUBJECTS.map(s => {
+        const quiz = QUIZZES[s.id];
+        if(!quiz) return null;
+        const res = results[s.id];
+        const pct = res ? Math.round((res.score/res.total)*100) : null;
+        const tint = TINTS[s.tint];
+        return html`<${Card} key=${s.id} className="p-3.5 sm:p-4">
+          <div className="flex items-start gap-3">
+            <div className=${cx("grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br text-white shadow-md sm:h-11 sm:w-11", tint.grad)}>
+              <${Icon} name=${s.icon} className="h-5 w-5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h3 className="text-[13.5px] font-extrabold leading-snug text-navy-900 sm:text-[14px]">${quiz.title}</h3>
+              <p className="mt-0.5 text-[11.5px] text-navy-500 sm:text-[12px]">${quiz.questions.length} questions · ~${quiz.questions.length} min</p>
+              ${res
+                ? html`<div className="mt-2 flex flex-wrap items-center gap-2">
+                    <${Badge} tone=${pct >= 60 ? "green" : "rose"}>${res.score}/${res.total} correct</${Badge}>
+                    <span className="text-[11px] font-semibold text-navy-400">${pct}% · ${timeAgo(res.at)}</span>
+                  </div>`
+                : html`<div className="mt-2"><${Badge} tone="navy">Not attempted</${Badge}></div>`}
+            </div>
+          </div>
+          <div className="mt-3 flex gap-2">
+            <${Button} size="sm" variant=${res ? "outline" : "primary"} className="flex-1" onClick=${() => go("quiz", { subjectId: s.id })}>
+              <${Icon} name=${res ? "refresh" : "play"} className="h-3.5 w-3.5" />
+              ${res ? "Retake quiz" : "Start quiz"}
+            </${Button}>
+            ${res ? html`<${Button} size="sm" variant="subtle" onClick=${() => go("quizResult", { subjectId: s.id })}>View result</${Button}>` : null}
+          </div>
+        </${Card}>`;
+      })}
+    </div>
+
+    <${Card} className="overflow-hidden">
+      <div className="flex items-center gap-3 border-b border-navy-100 bg-gradient-to-r from-amber-50 to-orange-50 p-3.5 sm:p-4">
+        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-white">
+          <${Icon} name="crown" className="h-5 w-5" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[13px] font-extrabold text-navy-900 sm:text-[13.5px]">Premium practice pack</p>
+          <p className="text-[11px] text-navy-500 sm:text-[11.5px]">20 additional MCQs across all subjects</p>
+        </div>
+        ${premium ? html`<${Badge} tone="green">Unlocked</${Badge}>` : html`<${Icon} name="lock" className="h-4 w-4 text-navy-400" />`}
+      </div>
+      <div className="p-3.5 sm:p-4">
+        <p className="text-[12px] leading-5 text-navy-600 sm:text-[12.5px] sm:leading-6">
+          A structured revision set with topic-tagged questions, timed practice and detailed solution notes. Included with StudySmart Premium at ₹49/month.
+        </p>
+        <${Button} size="sm" className="mt-3 w-full" variant=${premium ? "subtle" : "violet"} onClick=${() => go("premium")}>
+          ${premium ? "View membership" : "Unlock with Premium"} <${Icon} name="arrowRight" className="h-3.5 w-3.5" />
+        </${Button}>
+      </div>
+    </${Card}>
+  </div>`;
+}
+
+/* =========================================================
+   Quiz player
+   ========================================================= */
+function QuizPlayer(){
+  const { params, go, saveResult, back } = useApp();
+  const quiz = QUIZZES[params.subjectId];
+  const subject = findSubject(params.subjectId);
+  const [index, setIndex] = useState(0);
+  const [answers, setAnswers] = useState(() => (quiz ? quiz.questions.map(() => null) : []));
+  const [confirmSubmit, setConfirmSubmit] = useState(false);
+
+  if(!quiz || !subject){
+    return html`<${EmptyState} icon="info" title="Quiz unavailable"
+      message="This quiz is not part of the demo library."
+      action=${html`<${Button} onClick=${() => go("quizzes")}>Back to quizzes</${Button}>`} />`;
+  }
+
+  const total = quiz.questions.length;
+  const question = quiz.questions[index];
+  const answered = answers.filter(a => a !== null).length;
+  const isLast = index === total - 1;
+  const progress = Math.round(((index + 1) / total) * 100);
+
+  const select = (optIdx) => {
+    setAnswers(prev => prev.map((a, i) => (i === index ? optIdx : a)));
+  };
+
+  const submit = () => {
+    const score = quiz.questions.reduce((acc, q, i) => acc + (answers[i] === q.answer ? 1 : 0), 0);
+    saveResult(params.subjectId, { score, total, answers, at: Date.now() });
+    go("quizResult", { subjectId: params.subjectId });
+  };
+
+  return html`<div className="anim-in">
+    <div className="flex items-center justify-between">
+      <button onClick=${back}
+        className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-500 transition hover:text-navy-800 active:opacity-70">
+        <${Icon} name="chevronLeft" className="h-4 w-4" /> Exit
+      </button>
+      <${Badge} tone="brand">Q ${index + 1} of ${total}</${Badge}>
+    </div>
+
+    <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-navy-100 sm:mt-4">
+      <div className="h-full rounded-full bg-gradient-to-r from-brand-500 to-violet-500 transition-all duration-300" style=${{ width: progress + "%" }}></div>
+    </div>
+
+    <${Card} className="mt-4 p-4 sm:mt-5 sm:p-7">
+      <p className="text-[10.5px] font-bold uppercase tracking-widest text-brand-600 sm:text-[11px]">${subject.name} · Quiz</p>
+      <h2 className="mt-2 whitespace-pre-line text-[15px] font-extrabold leading-6 text-navy-900 sm:text-[17px] sm:leading-7">${question.q}</h2>
+      <div className="mt-4 space-y-2 sm:mt-5 sm:space-y-2.5">
+        ${question.options.map((opt, i) => {
+          const selected = answers[index] === i;
+          return html`<button key=${i} onClick=${() => select(i)} aria-pressed=${selected}
+            className=${cx("flex w-full items-center gap-3 rounded-xl border-2 px-3 py-3 text-left transition-all duration-150 active:scale-[0.995] sm:px-4 sm:py-3.5",
+              selected ? "border-brand-500 bg-brand-50 shadow-sm" : "border-navy-100 bg-white hover:border-navy-200 hover:bg-navy-50/60")}>
+            <span className=${cx("grid h-7 w-7 shrink-0 place-items-center rounded-lg text-[12px] font-extrabold transition",
+              selected ? "bg-brand-600 text-white" : "bg-navy-100 text-navy-500")}>
+              ${selected ? html`<${Icon} name="check" className="h-3.5 w-3.5" strokeWidth=${3} />` : String.fromCharCode(65 + i)}
+            </span>
+            <span className=${cx("text-[13.5px] leading-5 sm:text-[14px] sm:leading-6", selected ? "font-bold text-navy-900" : "font-medium text-navy-700")}>${opt}</span>
+          </button>`;
+        })}
+      </div>
+    </${Card}>
+
+    <div className="mt-3 flex items-center gap-2 sm:mt-4">
+      <${Button} variant="outline" disabled=${index === 0} onClick=${() => setIndex(i => Math.max(0, i - 1))} className="flex-1">
+        <${Icon} name="chevronLeft" className="h-4 w-4" /> Prev
+      </${Button}>
+      ${isLast
+        ? html`<${Button} variant="violet" onClick=${() => setConfirmSubmit(true)} className="flex-1">
+            Submit <${Icon} name="check" className="h-4 w-4" />
+          </${Button}>`
+        : html`<${Button} variant="primary" onClick=${() => setIndex(i => Math.min(total - 1, i + 1))} className="flex-1">
+            Next <${Icon} name="chevronRight" className="h-4 w-4" />
+          </${Button}>`}
+    </div>
+
+    <p className="mt-3 text-center text-[11.5px] font-semibold text-navy-400 sm:text-[12px]">
+      ${answered} of ${total} answered${answered < total ? " · you can still submit" : ""}
+    </p>
+
+    <${Modal} open=${confirmSubmit} onClose=${() => setConfirmSubmit(false)}>
+      <div className="grid h-12 w-12 place-items-center rounded-2xl bg-brand-50 text-brand-600">
+        <${Icon} name="help" className="h-6 w-6" />
+      </div>
+      <h3 className="mt-4 text-lg font-extrabold tracking-tight text-navy-900">Submit your quiz?</h3>
+      <p className="mt-1.5 text-[13px] leading-6 text-navy-500 sm:text-[13.5px]">
+        You have answered ${answered} of ${total} questions.${answered < total ? " Unanswered questions are marked incorrect." : ""}
+      </p>
+      <div className="mt-5 flex gap-2">
+        <${Button} variant="outline" className="flex-1" onClick=${() => setConfirmSubmit(false)}>Keep going</${Button}>
+        <${Button} variant="primary" className="flex-1" onClick=${submit}>Submit</${Button}>
+      </div>
+    </${Modal}>
+  </div>`;
+}
+
+/* =========================================================
+   Quiz result
+   ========================================================= */
+function QuizResult(){
+  const { params, results, go } = useApp();
+  const quiz = QUIZZES[params.subjectId];
+  const subject = findSubject(params.subjectId);
+  const result = results[params.subjectId];
+
+  if(!quiz || !subject || !result){
+    return html`<${EmptyState} icon="info" title="No result to show"
+      message="Attempt a quiz to see your score and explanations here."
+      action=${html`<${Button} onClick=${() => go("quizzes")}>Go to quizzes</${Button}>`} />`;
+  }
+
+  const pct = Math.round((result.score / result.total) * 100);
+  const verdict = pct >= 80 ? "Excellent work" : pct >= 60 ? "Good effort" : "Keep practising";
+
+  return html`<div className="anim-in space-y-4 sm:space-y-5">
+    <button onClick=${() => go("quizzes")}
+      className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-500 transition hover:text-navy-800 active:opacity-70">
+      <${Icon} name="chevronLeft" className="h-4 w-4" /> All quizzes
+    </button>
+
+    <${Card} className="overflow-hidden">
+      <div className="relative bg-navy-900 p-5 text-center text-white sm:p-6">
+        <div className="pointer-events-none absolute -left-10 -top-10 h-40 w-40 rounded-full bg-brand-500/25 blur-2xl"></div>
+        <div className="pointer-events-none absolute -right-10 bottom-0 h-40 w-40 rounded-full bg-violet-500/20 blur-2xl"></div>
+        <div className="relative">
+          <p className="text-[10.5px] font-bold uppercase tracking-widest text-navy-300 sm:text-[11px]">${quiz.title}</p>
+          <div className="mt-3 flex justify-center sm:mt-4">
+            <${ProgressRing} value=${pct} size=${124} stroke=${11} trackClass="text-white/15">
+              <span className="text-2xl font-extrabold tracking-tight sm:text-3xl">${pct}%</span>
+              <span className="text-[9.5px] font-bold uppercase tracking-widest text-navy-300 sm:text-[10px]">score</span>
+            </${ProgressRing}>
+          </div>
+          <h1 className="mt-3 text-lg font-extrabold tracking-tight sm:mt-4 sm:text-xl">${verdict}!</h1>
+          <p className="mt-1 text-[12.5px] text-navy-300 sm:text-[13px]">You answered ${result.score} of ${result.total} correctly.</p>
+        </div>
+      </div>
+      <div className="grid grid-cols-3 divide-x divide-navy-100">
+        ${[
+          { label:"Correct", value:result.score, tone:"text-emerald-600" },
+          { label:"Incorrect", value:result.total - result.score, tone:"text-rose-600" },
+          { label:"Percentage", value:pct + "%", tone:"text-brand-600" }
+        ].map(s => html`<div key=${s.label} className="px-2 py-3 text-center sm:py-4">
+          <p className=${cx("text-base font-extrabold tracking-tight sm:text-lg", s.tone)}>${s.value}</p>
+          <p className="text-[10px] font-bold uppercase tracking-wide text-navy-400 sm:text-[10.5px]">${s.label}</p>
+        </div>`)}
+      </div>
+    </${Card}>
+
+    <div className="flex gap-2">
+      <${Button} variant="primary" className="flex-1" onClick=${() => go("quiz", { subjectId: subject.id })}>
+        <${Icon} name="refresh" className="h-4 w-4" /> Retake
+      </${Button}>
+      <${Button} variant="outline" className="flex-1" onClick=${() => go("quizzes")}>Back</${Button}>
+    </div>
+
+    <div>
+      <${SectionTitle}>Answer review</${SectionTitle}>
+      <div className="space-y-2.5">
+        ${quiz.questions.map((q, i) => {
+          const chosen = result.answers[i];
+          const correct = chosen === q.answer;
+          return html`<${Card} key=${i} className="p-3.5 sm:p-4">
+            <div className="flex items-start gap-3">
+              <span className=${cx("grid h-6 w-6 shrink-0 place-items-center rounded-full text-white", correct ? "bg-emerald-500" : "bg-rose-500")}>
+                <${Icon} name=${correct ? "check" : "x"} className="h-3.5 w-3.5" strokeWidth=${3} />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-[13px] font-bold leading-5 text-navy-900 sm:text-[13.5px] sm:leading-6">${i + 1}. ${q.q}</p>
+                <div className="mt-2 space-y-1.5">
+                  <div className=${cx("rounded-lg px-2.5 py-2 text-[12px] leading-5 sm:px-3 sm:text-[12.5px]",
+                    correct ? "bg-emerald-50 text-emerald-800" : "bg-rose-50 text-rose-800")}>
+                    <span className="font-bold">Your answer: </span>
+                    ${chosen === null || chosen === undefined ? "Not answered" : q.options[chosen]}
+                  </div>
+                  ${!correct ? html`<div className="rounded-lg bg-emerald-50 px-2.5 py-2 text-[12px] leading-5 text-emerald-800 sm:px-3 sm:text-[12.5px]">
+                    <span className="font-bold">Correct: </span>${q.options[q.answer]}
+                  </div>` : null}
+                </div>
+                <div className="mt-2 flex gap-2 rounded-lg bg-navy-50 px-2.5 py-2 sm:px-3">
+                  <${Icon} name="info" className="mt-0.5 h-3.5 w-3.5 shrink-0 text-navy-400" />
+                  <p className="text-[11.5px] leading-5 text-navy-600 sm:text-[12px]">${q.explanation}</p>
+                </div>
+              </div>
+            </div>
+          </${Card}>`;
+        })}
+      </div>
+    </div>
+  </div>`;
+}
+
+/* =========================================================
+   Library
+   ========================================================= */
+function Library(){
+  const { bookmarks, toggleBookmark, recent, openNote, go } = useApp();
+  const [tab, setTab] = useState("bookmarks");
+
+  const bookmarkItems = bookmarks.map(k => { const [s, n] = k.split(":"); return findResource(s, n); }).filter(Boolean);
+  const recentItems = recent.map(r => ({ found:findResource(r.subjectId, r.noteId), at:r.at })).filter(x => x.found);
+
+  return html`<div className="anim-in space-y-5">
+    <div>
+      <h1 className="text-[22px] font-extrabold tracking-tight text-navy-900 sm:text-[26px]">My Library</h1>
+      <p className="mt-1 text-[13px] text-navy-500 sm:text-sm">Your saved notes and reading history for this session.</p>
+    </div>
+
+    <div className="grid grid-cols-2 gap-1 rounded-xl bg-navy-100/70 p-1">
+      ${[
+        { id:"bookmarks", label:"Bookmarks", count:bookmarkItems.length },
+        { id:"recent", label:"Recently opened", count:recentItems.length }
+      ].map(t => html`<button key=${t.id} onClick=${() => setTab(t.id)}
+        className=${cx("rounded-lg py-2.5 text-[12.5px] font-bold transition active:scale-[0.98] sm:text-[13px]",
+          tab === t.id ? "bg-white text-navy-900 shadow-soft" : "text-navy-500 hover:text-navy-700")}>
+        ${t.label} <span className="ml-1 text-[10.5px] font-extrabold text-navy-400">${t.count}</span>
+      </button>`)}
+    </div>
+
+    ${tab === "bookmarks"
+      ? (bookmarkItems.length === 0
+          ? html`<${EmptyState} icon="bookmark" title="No bookmarks yet"
+              message="Tap the bookmark icon on any note to save it here for quick access."
+              action=${html`<${Button} onClick=${() => go("subjects")}>Browse subjects <${Icon} name="arrowRight" className="h-4 w-4" /></${Button}>`} />`
+          : html`<div className="space-y-2.5">
+              ${bookmarkItems.map(({ subject, resource }) => {
+                const tint = TINTS[subject.tint];
+                return html`<${Card} key=${subject.id + resource.id} className="p-3.5 sm:p-4">
+                  <div className="flex items-start gap-3">
+                    <div className=${cx("grid h-10 w-10 shrink-0 place-items-center rounded-xl", tint.bg, tint.text)}>
+                      <${Icon} name="file" className="h-4 w-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[13px] font-extrabold leading-snug text-navy-900 sm:text-[13.5px]">${resource.title}</p>
+                      <p className="mt-0.5 text-[11px] text-navy-500 sm:text-[11.5px]">${subject.name} · ${resource.type} · ${resource.minutes} min</p>
+                    </div>
+                    <button onClick=${() => toggleBookmark(subject.id, resource.id)} aria-label="Remove bookmark"
+                      className="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-navy-200 text-navy-400 transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-500 active:scale-95">
+                      <${Icon} name="trash" className="h-4 w-4" />
+                    </button>
+                  </div>
+                  <${Button} size="sm" className="mt-3 w-full" onClick=${() => openNote(subject.id, resource.id)}>
+                    <${Icon} name="play" className="h-3.5 w-3.5" /> Read note
+                  </${Button}>
+                </${Card}>`;
+              })}
+            </div>`)
+      : (recentItems.length === 0
+          ? html`<${EmptyState} icon="clock" title="Nothing opened yet"
+              message="Notes you read will be listed here so you can pick up where you left off."
+              action=${html`<${Button} onClick=${() => go("subjects")}>Open a note <${Icon} name="arrowRight" className="h-4 w-4" /></${Button}>`} />`
+          : html`<div className="space-y-2.5">
+              ${recentItems.map(({ found, at }) => {
+                const { subject, resource } = found;
+                const tint = TINTS[subject.tint];
+                return html`<button key=${subject.id + resource.id} onClick=${() => openNote(subject.id, resource.id)}
+                  className="flex w-full items-center gap-3 rounded-2xl border border-navy-100 bg-white p-3.5 text-left shadow-soft transition hover:border-navy-200 hover:shadow-lift active:scale-[0.99]">
+                  <div className=${cx("grid h-10 w-10 shrink-0 place-items-center rounded-xl", tint.bg, tint.text)}>
+                    <${Icon} name="file" className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-[13px] font-bold text-navy-900 sm:text-[13.5px]">${resource.title}</p>
+                    <p className="text-[11px] text-navy-500 sm:text-[11.5px]">${subject.name} · ${timeAgo(at)}</p>
+                  </div>
+                  <${Icon} name="chevronRight" className="h-4 w-4 shrink-0 text-navy-300" />
+                </button>`;
+              })}
+            </div>`)}
+  </div>`;
+}
+
+/* =========================================================
+   Premium
+   ========================================================= */
+function Premium(){
+  const { premium, setPremium, go, toast } = useApp();
+  const [confirm, setConfirm] = useState(false);
+
+  const freeFeatures = [
+    { text:"Selected unit-wise notes", ok:true },
+    { text:"Basic 5-question quiz per subject", ok:true },
+    { text:"Bookmarks & reading history", ok:true },
+    { text:"Full study packs & revision sheets", ok:false },
+    { text:"Interactive 3D Models", ok:false },
+    { text:"Structured revision resources", ok:false }
+  ];
+  const premiumFeatures = [
+    "Every note and e-book in all subjects",
+    "All subject quizzes plus the premium practice pack",
+    "Interactive 3D models for complex concepts",
+    "Structured revision paths per unit",
+    "Priority access to newly added subjects",
+    "Downloadable demo note files"
+  ];
+
+  const confirmUpgrade = () => {
+    setPremium(true);
+    setConfirm(false);
+    toast("Premium unlocked for this demo session");
+  };
+
+  return html`<div className="anim-in space-y-4 sm:space-y-5">
+    <div className="relative overflow-hidden rounded-3xl bg-navy-950 p-5 text-white shadow-lift sm:p-6">
+      <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-brand-500/25 blur-3xl"></div>
+      <div className="pointer-events-none absolute -left-12 bottom-0 h-40 w-40 rounded-full bg-violet-500/20 blur-3xl"></div>
+      <div className="relative">
+        <${Badge} tone="gold"><${Icon} name="crown" className="h-3 w-3" />StudySmart Premium</${Badge}>
+        <h1 className="mt-3 text-[20px] font-extrabold leading-tight tracking-tight sm:text-[24px]">
+          Everything you need,<br />for less than a chai a week.
+        </h1>
+        <p className="mt-2 max-w-md text-[12.5px] leading-5 text-navy-300 sm:text-[13.5px] sm:leading-6">
+          One affordable plan that unlocks every note, every quiz and every 3D model in the library.
+        </p>
+        <div className="mt-4 flex items-end gap-1.5 sm:mt-5">
+          <span className="text-3xl font-extrabold tracking-tight sm:text-4xl">₹49</span>
+          <span className="pb-1 text-[13px] font-semibold text-navy-300 sm:pb-1.5 sm:text-sm">/ month</span>
+        </div>
+        <p className="mt-1 text-[10.5px] font-semibold text-navy-400 sm:text-[11px]">Prototype pricing proposal · not a live commercial offer</p>
+      </div>
+    </div>
+
+    ${premium ? html`<${Card} className="flex flex-col gap-3 border-emerald-200 bg-emerald-50 p-3.5 sm:flex-row sm:items-center sm:p-4">
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-emerald-500 text-white">
+        <${Icon} name="check" className="h-5 w-5" strokeWidth=${3} />
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="text-[13px] font-extrabold text-emerald-900 sm:text-[13.5px]">Premium is active in this demo</p>
+        <p className="text-[11px] text-emerald-700 sm:text-[11.5px]">All notes and quizzes are unlocked for this session.</p>
+      </div>
+      <${Button} size="sm" variant="outline" onClick=${() => { setPremium(false); toast("Returned to the Free plan (demo)", "info"); }}>Switch to Free</${Button}>
+    </${Card}>` : null}
+
+    <div className="grid gap-3 md:grid-cols-2">
+      <${Card} className=${cx("p-4 sm:p-5", premium && "opacity-70")}>
+        <div className="flex items-center justify-between">
+          <h2 className="text-[14px] font-extrabold text-navy-900 sm:text-[15px]">Free</h2>
+          ${!premium ? html`<${Badge} tone="navy">Current plan</${Badge}>` : null}
+        </div>
+        <p className="mt-1 text-xl font-extrabold tracking-tight text-navy-900 sm:text-2xl">₹0<span className="text-[13px] font-bold text-navy-400 sm:text-sm"> / forever</span></p>
+        <ul className="mt-3 space-y-2 sm:mt-4 sm:space-y-2.5">
+          ${freeFeatures.map(f => html`<li key=${f.text} className="flex items-start gap-2.5">
+            <span className=${cx("mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full", f.ok ? "bg-emerald-100 text-emerald-600" : "bg-navy-100 text-navy-400")}>
+              <${Icon} name=${f.ok ? "check" : "x"} className="h-2.5 w-2.5" strokeWidth=${3.5} />
+            </span>
+            <span className=${cx("text-[12px] leading-5 sm:text-[12.5px]", f.ok ? "text-navy-700" : "text-navy-400")}>${f.text}</span>
+          </li>`)}
+        </ul>
+      </${Card}>
+
+      <${Card} className="relative overflow-hidden border-brand-200 p-4 ring-2 ring-brand-500/15 sm:p-5">
+        <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-brand-100/70 blur-2xl"></div>
+        <div className="relative">
+          <div className="flex items-center justify-between">
+            <h2 className="text-[14px] font-extrabold text-navy-900 sm:text-[15px]">Premium</h2>
+            <${Badge} tone="gold"><${Icon} name="crown" className="h-3 w-3" />Best value</${Badge}>
+          </div>
+          <p className="mt-1 text-xl font-extrabold tracking-tight text-navy-900 sm:text-2xl">₹49<span className="text-[13px] font-bold text-navy-400 sm:text-sm"> / month</span></p>
+          <ul className="mt-3 space-y-2 sm:mt-4 sm:space-y-2.5">
+            ${premiumFeatures.map(f => html`<li key=${f} className="flex items-start gap-2.5">
+              <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-brand-100 text-brand-600">
+                <${Icon} name="check" className="h-2.5 w-2.5" strokeWidth=${3.5} />
+              </span>
+              <span className="text-[12px] leading-5 text-navy-700 sm:text-[12.5px]">${f}</span>
+            </li>`)}
+          </ul>
+          <${Button} variant=${premium ? "outline" : "violet"} className="mt-4 w-full sm:mt-5"
+            onClick=${() => (premium ? go("subjects") : setConfirm(true))}>
+            ${premium ? "Browse library" : "Upgrade to Premium"} <${Icon} name="arrowRight" className="h-4 w-4" />
+          </${Button}>
+        </div>
+      </${Card}>
+    </div>
+
+    <${Card} className="p-3.5 sm:p-4">
+      <div className="flex gap-2.5">
+        <${Icon} name="info" className="mt-0.5 h-4 w-4 shrink-0 text-navy-400" />
+        <p className="text-[11px] leading-5 text-navy-500 sm:text-[11.5px]">
+          <strong className="font-bold text-navy-700">Prototype disclosure:</strong> ₹49/month is an illustrative price for this academic presentation. No payment gateway is connected, no money is collected, and this is not a commercial offer. Upgrading simply unlocks premium demo content in your browser.
+        </p>
+      </div>
+    </${Card}>
+
+    <p className="text-center text-[10.5px] font-semibold uppercase tracking-widest text-navy-400">Created by GROUP 1D</p>
+
+    <${Modal} open=${confirm} onClose=${() => setConfirm(false)}>
+      <div className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white">
+        <${Icon} name="crown" className="h-6 w-6" />
+      </div>
+      <h3 className="mt-4 text-lg font-extrabold tracking-tight text-navy-900">Confirm demo upgrade</h3>
+      <p className="mt-1.5 text-[13px] leading-6 text-navy-500 sm:text-[13.5px]">
+        You are about to unlock StudySmart Premium for this demo session at an illustrative price of ₹49/month.
+      </p>
+      <div className="mt-4 rounded-xl bg-navy-50 p-3.5">
+        <div className="flex items-center justify-between text-[13px]">
+          <span className="font-semibold text-navy-600">StudySmart Premium</span>
+          <span className="font-extrabold text-navy-900">₹49.00</span>
+        </div>
+        <p className="mt-1 text-[11px] text-navy-400">No payment will be taken. Demo only.</p>
+      </div>
+      <div className="mt-5 flex gap-2">
+        <${Button} variant="outline" className="flex-1" onClick=${() => setConfirm(false)}>Cancel</${Button}>
+        <${Button} variant="violet" className="flex-1" onClick=${confirmUpgrade}>Confirm upgrade</${Button}>
+      </div>
+    </${Modal}>
+  </div>`;
+}
+
+/* =========================================================
+   Profile
+   ========================================================= */
+function Profile(){
+  const { user, setUser, prefs, setPrefs, results, bookmarks, recent, premium, signOut, toast, go } = useApp();
+  const [name, setName] = useState(user.name);
+  const [email, setEmail] = useState(user.email);
+  const [branch, setBranch] = useState(user.branch);
+  const [goal, setGoal] = useState(prefs.dailyGoal);
+  const [notifications, setNotifications] = useState(prefs.notifications);
+  const [reminder, setReminder] = useState(prefs.reminder);
+  const [confirmLogout, setConfirmLogout] = useState(false);
+  const [confirmReset, setConfirmReset] = useState(false);
+
+  const resultList = Object.values(results);
+  const avg = resultList.length ? Math.round(resultList.reduce((a,r) => a + (r.score/r.total)*100, 0) / resultList.length) : 0;
+
+  const save = () => {
+    if(!name.trim()){ toast("Name cannot be empty", "error"); return; }
+    if(!/^\S+@\S+\.\S+$/.test(email.trim())){ toast("Please enter a valid email", "error"); return; }
+    setUser({ ...user, name:name.trim(), email:email.trim(), branch:branch.trim() });
+    setPrefs({ ...prefs, dailyGoal:Number(goal) || 30, notifications, reminder });
+    toast("Profile and preferences saved");
+  };
+
+  const resetDemo = () => {
+    ["ss_logged","ss_user","ss_prefs","ss_bookmarks","ss_recent","ss_results","ss_premium"].forEach(k => {
+      try { localStorage.removeItem(k); } catch(e){}
+    });
+    window.location.reload();
+  };
+
+  const initials = name.trim().split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase() || "DS";
+
+  return html`<div className="anim-in space-y-4 sm:space-y-5">
+    <div>
+      <h1 className="text-[22px] font-extrabold tracking-tight text-navy-900 sm:text-[26px]">Profile</h1>
+      <p className="mt-1 text-[13px] text-navy-500 sm:text-sm">Your demo account, activity and preferences.</p>
+    </div>
+
+    <!-- Fixed Profile Header (No clipping, correct gradients) -->
+    <Card className="overflow-visible relative">
+      <div className="relative h-24 bg-gradient-to-r from-brand-600 via-brand-500 to-violet-600 rounded-t-2xl">
+        <div className="pointer-events-none absolute -right-6 -top-6 h-28 w-28 rounded-full bg-white/15 blur-2xl"></div>
+      </div>
+      <div className="px-4 pb-4 sm:px-5 sm:pb-5">
+        <div className="-mt-8 flex items-end gap-3 relative z-10">
+          <!-- Solid navy background so the text is perfectly visible -->
+          <div className="grid h-16 w-16 place-items-center rounded-2xl border-4 border-white bg-navy-900 text-xl font-extrabold text-white shadow-lg">
+            ${initials}
+          </div>
+          <div className="pb-1">${premium ? html`<${Badge} tone="gold"><${Icon} name="crown" className="h-3 w-3" />Premium</${Badge}>` : null}</div>
+        </div>
+        <h2 className="mt-3 text-base font-extrabold tracking-tight text-navy-900 sm:text-lg">${name || "Deepak Sharma"}</h2>
+        <p className="text-[12.5px] text-navy-500 sm:text-[13px]">${email}</p>
+        <p className="mt-0.5 text-[11.5px] font-semibold text-navy-400 sm:text-[12px]">${branch}</p>
+      </div>
+    </Card>
+
+    <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-3">
+      ${[
+        { label:"Quizzes", value:resultList.length, icon:"help", tone:"text-brand-600 bg-brand-50" },
+        { label:"Avg score", value:avg + "%", icon:"trophy", tone:"text-amber-600 bg-amber-50" },
+        { label:"Bookmarks", value:bookmarks.length, icon:"bookmark", tone:"text-violet-600 bg-violet-50" },
+        { label:"Notes read", value:recent.length, icon:"file", tone:"text-emerald-600 bg-emerald-50" }
+      ].map(s => html`<${Card} key=${s.label} className="p-3 sm:p-4">
+        <span className=${cx("grid h-8 w-8 place-items-center rounded-lg", s.tone)}>
+          <${Icon} name=${s.icon} className="h-4 w-4" />
+        </span>
+        <p className="mt-2 text-base font-extrabold tracking-tight text-navy-900 sm:text-lg">${s.value}</p>
+        <p className="text-[10px] font-bold uppercase tracking-wide text-navy-400 sm:text-[10.5px]">${s.label}</p>
+      </${Card}>`)}
+    </div>
+
+    ${resultList.length > 0 ? html`<div>
+      <${SectionTitle}>Recent quiz scores</${SectionTitle}>
+      <${Card} className="divide-y divide-navy-100">
+        ${Object.entries(results).map(([sid, r]) => {
+          const s = findSubject(sid);
+          const pct = Math.round((r.score/r.total)*100);
+          return html`<button key=${sid} onClick=${() => go("quizResult", { subjectId: sid })}
+            className="flex w-full items-center gap-3 px-3.5 py-3 text-left transition hover:bg-navy-50/60 active:bg-navy-100/60 sm:px-4">
+            <div className=${cx("grid h-9 w-9 shrink-0 place-items-center rounded-lg", TINTS[s ? s.tint : "blue"].bg, TINTS[s ? s.tint : "blue"].text)}>
+              <${Icon} name=${s ? s.icon : "help"} className="h-4 w-4" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[12.5px] font-bold text-navy-900 sm:text-[13px]">${s ? s.name : sid}</p>
+              <p className="text-[11px] text-navy-500">${r.score}/${r.total} correct · ${timeAgo(r.at)}</p>
+            </div>
+            <span className=${cx("text-[12.5px] font-extrabold sm:text-[13px]", pct >= 60 ? "text-emerald-600" : "text-rose-600")}>${pct}%</span>
+          </button>`;
+        })}
+      </${Card}>
+    </div>` : null}
+
+    <div>
+      <${SectionTitle}>Demo preferences</${SectionTitle}>
+      <${Card} className="space-y-3.5 p-4 sm:space-y-4 sm:p-5">
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+          <div>
+            <label htmlFor="p-name" className="mb-1.5 block text-[12.5px] font-bold text-navy-700 sm:text-[13px]">Display name</label>
+            <input id="p-name" value=${name} onInput=${e => setName(e.target.value)}
+              className="w-full rounded-xl border border-navy-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15" />
+          </div>
+          <div>
+            <label htmlFor="p-email" className="mb-1.5 block text-[12.5px] font-bold text-navy-700 sm:text-[13px]">Email</label>
+            <input id="p-email" type="email" value=${email} onInput=${e => setEmail(e.target.value)}
+              className="w-full rounded-xl border border-navy-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15" />
+          </div>
+          <div>
+            <label htmlFor="p-branch" className="mb-1.5 block text-[12.5px] font-bold text-navy-700 sm:text-[13px]">Branch</label>
+            <input id="p-branch" value=${branch} onInput=${e => setBranch(e.target.value)}
+              className="w-full rounded-xl border border-navy-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15" />
+          </div>
+          <div>
+            <label htmlFor="p-goal" className="mb-1.5 block text-[12.5px] font-bold text-navy-700 sm:text-[13px]">Daily goal (min)</label>
+            <input id="p-goal" type="number" min="5" max="240" value=${goal} onInput=${e => setGoal(e.target.value)}
+              className="w-full rounded-xl border border-navy-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15" />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between rounded-xl border border-navy-100 bg-navy-50/60 px-3 py-2.5 sm:px-3.5 sm:py-3">
+          <div className="flex items-center gap-2.5">
+            <${Icon} name="bell" className="h-4 w-4 text-navy-400" />
+            <div>
+              <p className="text-[12.5px] font-bold text-navy-800 sm:text-[13px]">Study reminders</p>
+              <p className="text-[10.5px] text-navy-500 sm:text-[11px]">A gentle nudge at your preferred time</p>
+            </div>
+          </div>
+          <button role="switch" aria-checked=${notifications} aria-label="Toggle study reminders"
+            onClick=${() => setNotifications(v => !v)}
+            className=${cx("relative h-6 w-11 shrink-0 rounded-full transition-colors", notifications ? "bg-brand-600" : "bg-navy-200")}>
+            <span className=${cx("absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all", notifications ? "left-[22px]" : "left-0.5")}></span>
+          </button>
+        </div>
+
+        <div>
+          <label htmlFor="p-reminder" className="mb-1.5 block text-[12.5px] font-bold text-navy-700 sm:text-[13px]">Reminder time</label>
+          <input id="p-reminder" type="time" value=${reminder} onInput=${e => setReminder(e.target.value)} disabled=${!notifications}
+            className="w-full rounded-xl border border-navy-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 disabled:bg-navy-50 disabled:text-navy-400 sm:w-56" />
+        </div>
+
+        <${Button} className="w-full" onClick=${save}>
+          <${Icon} name="check" className="h-4 w-4" /> Save changes
+        </${Button}>
+      </${Card}>
+    </div>
+
+    <div className="space-y-2.5">
+      <${Button} variant="outline" className="w-full justify-start" onClick=${() => go("premium")}>
+        <${Icon} name="crown" className="h-4 w-4 text-amber-500" />
+        ${premium ? "Manage membership" : "Upgrade to Premium"}
+        <${Icon} name="chevronRight" className="ml-auto h-4 w-4 text-navy-300" />
+      </${Button}>
+      <${Button} variant="outline" className="w-full justify-start" onClick=${() => setConfirmReset(true)}>
+        <${Icon} name="refresh" className="h-4 w-4 text-navy-400" />
+        Reset demo data
+        <${Icon} name="chevronRight" className="ml-auto h-4 w-4 text-navy-300" />
+      </${Button}>
+      <${Button} variant="danger" className="w-full justify-start" onClick=${() => setConfirmLogout(true)}>
+        <${Icon} name="logout" className="h-4 w-4" />
+        Log out
+        <${Icon} name="chevronRight" className="ml-auto h-4 w-4 text-rose-300" />
+      </${Button}>
+    </div>
+
+    <div className="pb-2 text-center">
+      <p className="text-[10px] font-extrabold uppercase tracking-widest text-navy-500">Created by GROUP 1D</p>
+      <p className="mt-1.5 text-[10.5px] leading-5 text-navy-400">
+        StudySmart prototype · Demo data stored locally in this browser.<br />
+        No accounts, payments or university affiliations are real.
+      </p>
+    </div>
+
+    <${Modal} open=${confirmLogout} onClose=${() => setConfirmLogout(false)}>
+      <div className="grid h-12 w-12 place-items-center rounded-2xl bg-rose-50 text-rose-500">
+        <${Icon} name="logout" className="h-6 w-6" />
+      </div>
+      <h3 className="mt-4 text-lg font-extrabold tracking-tight text-navy-900">Log out of StudySmart?</h3>
+      <p className="mt-1.5 text-[13px] leading-6 text-navy-500 sm:text-[13.5px]">
+        Your bookmarks and progress stay saved in this browser. You can sign back in any time.
+      </p>
+      <div className="mt-5 flex gap-2">
+        <${Button} variant="outline" className="flex-1" onClick=${() => setConfirmLogout(false)}>Cancel</${Button}>
+        <${Button} variant="primary" className="flex-1" onClick=${() => { setConfirmLogout(false); signOut(); }}>Log out</${Button}>
+      </div>
+    </${Modal}>
+
+    <${Modal} open=${confirmReset} onClose=${() => setConfirmReset(false)}>
+      <div className="grid h-12 w-12 place-items-center rounded-2xl bg-navy-100 text-navy-600">
+        <${Icon} name="refresh" className="h-6 w-6" />
+      </div>
+      <h3 className="mt-4 text-lg font-extrabold tracking-tight text-navy-900">Reset demo data?</h3>
+      <p className="mt-1.5 text-[13px] leading-6 text-navy-500 sm:text-[13.5px]">
+        This clears bookmarks, quiz results and preferences, then restarts the prototype from the welcome screen.
+      </p>
+      <div className="mt-5 flex gap-2">
+        <${Button} variant="outline" className="flex-1" onClick=${() => setConfirmReset(false)}>Cancel</${Button}>
+        <${Button} variant="primary" className="flex-1" onClick=${resetDemo}>Reset now</${Button}>
+      </div>
+    </${Modal}>
+  </div>`;
+}
+
+/* =========================================================
+   Shell
+   ========================================================= */
+const NAV = [
+  { id:"dashboard", label:"Home", icon:"home" },
+  { id:"subjects", label:"Subjects", icon:"grid" },
+  { id:"quizzes", label:"Quizzes", icon:"help" },
+  { id:"library", label:"My Library", icon:"bookmark" },
+  { id:"profile", label:"Profile", icon:"user" }
+];
+
+function Shell({ children, activeId }){
+  const { navigate, premium, user, screen, back, go } = useApp();
+  const initials = (user.name || "Deepak Sharma").split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase();
+  
+  // Determine if we are on a root screen (bottom nav) or a sub-screen
+  const rootScreens = ["dashboard", "subjects", "quizzes", "library", "profile"];
+  const isSubScreen = !rootScreens.includes(screen);
+
+  return html`<div className="min-h-screen bg-navy-50 relative">
+    <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-white/5 bg-navy-950 lg:flex">
+      <div className="px-5 py-6">
+        <button onClick=${() => navigate("dashboard")} aria-label="StudySmart home" className="transition active:opacity-70">
+          <${Logo} dark=${true} />
+        </button>
+      </div>
+      <nav className="flex-1 space-y-1 px-3">
+        ${NAV.map(item => {
+          const active = activeId === item.id;
+          return html`<button key=${item.id} onClick=${() => navigate(item.id)}
+            aria-current=${active ? "page" : undefined}
+            className=${cx("flex w-full items-center gap-3 rounded-xl px-3.5 py-3 text-[13.5px] font-bold transition active:scale-[0.98]",
+              active ? "bg-white/10 text-white shadow-inner" : "text-navy-300 hover:bg-white/5 hover:text-white")}>
+            <${Icon} name=${item.icon} className=${cx("h-[18px] w-[18px]", active && "text-brand-300")} />
+            ${item.label}
+            ${active ? html`<span className="ml-auto h-1.5 w-1.5 rounded-full bg-brand-400"></span>` : null}
+          </button>`;
+        })}
+      </nav>
+      <div className="p-3">
+        ${!premium ? html`<button onClick=${() => navigate("premium")}
+          className="w-full rounded-2xl bg-gradient-to-br from-brand-600 to-violet-600 p-4 text-left transition hover:brightness-110 active:scale-[0.98]">
+          <div className="flex items-center gap-2">
+            <${Icon} name="crown" className="h-4 w-4 text-amber-200" />
+            <span className="text-[11px] font-extrabold uppercase tracking-wider text-white/80">Premium</span>
+          </div>
+          <p className="mt-1.5 text-[13px] font-extrabold leading-snug text-white">Unlock all notes & quizzes</p>
+          <p className="mt-0.5 text-[11px] font-semibold text-white/70">₹49/month · proposal</p>
+        </button>` : null}
+        <button onClick=${() => navigate("profile")} className="mt-3 flex w-full items-center gap-2.5 rounded-xl px-2 py-2 text-left transition hover:bg-white/5 active:scale-[0.98]">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-brand-500/20 text-[11px] font-extrabold text-brand-200">${initials}</span>
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-[12.5px] font-bold text-white">${user.name}</span>
+            <span className="block truncate text-[10.5px] text-navy-400">${user.branch}</span>
+          </span>
+        </button>
+        <p className="mt-3 text-center text-[9.5px] font-semibold uppercase tracking-widest text-navy-500">Created by GROUP 1D</p>
+      </div>
+    </aside>
+
+    <header className="sticky top-0 z-30 border-b border-navy-100 bg-white/85 backdrop-blur-md lg:hidden">
+      <div className="flex items-center justify-between px-3 py-2.5 sm:px-4 sm:py-3">
+        <div className="flex items-center gap-2">
+          ${isSubScreen ? html`
+            <button onClick=${back} aria-label="Go back" className="grid h-10 w-10 place-items-center rounded-xl bg-navy-50 text-navy-600 transition hover:bg-navy-100 active:scale-95">
+              <${Icon} name="chevronLeft" className="h-5 w-5" strokeWidth=${2.5} />
+            </button>
+          ` : null}
+          <button onClick=${() => navigate("dashboard")} aria-label="StudySmart home" className="transition active:opacity-70">
+            <${Logo} />
+          </button>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <button onClick=${() => navigate("premium")} aria-label="Premium membership"
+            className=${cx("grid h-10 w-10 place-items-center rounded-xl transition active:scale-95",
+              premium ? "bg-amber-50 text-amber-600" : "bg-navy-50 text-navy-500 hover:bg-navy-100")}>
+            <${Icon} name="crown" className="h-[18px] w-[18px]" />
+          </button>
+          <button onClick=${() => navigate("profile")} aria-label="Profile"
+            className="grid h-10 w-10 place-items-center rounded-xl bg-navy-900 text-[11px] font-extrabold text-white transition active:scale-95">${initials}</button>
+        </div>
+      </div>
+    </header>
+
+    <main className="lg:pl-64">
+      <div className="mx-auto w-full max-w-3xl px-3.5 pb-28 pt-4 sm:px-6 sm:pt-5 lg:max-w-4xl lg:pb-14 lg:pt-8">
+        ${children}
+      </div>
+    </main>
+
+    <!-- Floating AI Button -->
+    ${screen !== "ai" ? html`
+      <button onClick=${() => go("ai")} 
+        className="fixed bottom-20 right-4 sm:bottom-24 sm:right-6 z-50 grid h-14 w-14 place-items-center rounded-full bg-gradient-to-r from-brand-600 to-violet-600 text-white shadow-xl shadow-brand-600/40 transition-transform hover:scale-110 active:scale-95 lg:bottom-8 lg:right-8"
+        aria-label="Open StudySmart AI">
+        <${Icon} name="sparkles" className="h-6 w-6" />
+      </button>
+    ` : null}
+
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-navy-100 bg-white/95 backdrop-blur-md safe-bottom lg:hidden" aria-label="Primary">
+      <div className="mx-auto flex max-w-lg items-stretch justify-between px-1">
+        ${NAV.map(item => {
+          const active = activeId === item.id;
+          return html`<button key=${item.id} onClick=${() => navigate(item.id)}
+            aria-current=${active ? "page" : undefined} aria-label=${item.label}
+            className="relative flex flex-1 flex-col items-center gap-0.5 px-0.5 py-2 transition active:scale-95">
+            <span className=${cx("grid h-8 w-11 place-items-center rounded-lg transition-all",
+              active ? "bg-brand-50 text-brand-600" : "text-navy-400")}>
+              <${Icon} name=${item.icon} className="h-[19px] w-[19px]" strokeWidth=${active ? 2.2 : 1.8} />
+            </span>
+            <span className=${cx("text-[10px] font-bold leading-none", active ? "text-brand-700" : "text-navy-400")}>
+              ${item.label}
+            </span>
+          </button>`;
+        })}
+      </div>
+    </nav>
+  </div>`;
+}
+
+function ToastStack({ toasts }){
+  return html`<div className="pointer-events-none fixed inset-x-0 top-3 z-[90] flex flex-col items-center gap-2 px-3 sm:top-5 sm:px-4">
+    ${toasts.map(t => html`<div key=${t.id}
+      className=${cx("anim-pop pointer-events-auto flex w-full max-w-sm items-center gap-2.5 rounded-xl px-4 py-3 text-[13px] font-semibold shadow-lift",
+        t.kind === "error" ? "bg-rose-600 text-white" : t.kind === "info" ? "bg-navy-900 text-white" : "bg-emerald-600 text-white")}>
+      <${Icon} name=${t.kind === "error" ? "x" : t.kind === "info" ? "info" : "check"} className="h-4 w-4 shrink-0" strokeWidth=${2.6} />
+      <span className="flex-1">${t.msg}</span>
+    </div>`)}
+  </div>`;
+}
+
+/* =========================================================
+   Root App
+   ========================================================= */
+function App(){
+  const [loggedIn, setLoggedIn] = useLocalStorage("ss_logged", false);
+  const [user, setUser] = useLocalStorage("ss_user", { name:"Deepak Sharma", email:"deepak@studysmart.demo", branch:"B.Tech · First Year" });
+  const [prefs, setPrefs] = useLocalStorage("ss_prefs", { dailyGoal:30, notifications:true, reminder:"19:00" });
+  const [bookmarks, setBookmarks] = useLocalStorage("ss_bookmarks", []);
+  const [recent, setRecent] = useLocalStorage("ss_recent", []);
+  const [results, setResults] = useLocalStorage("ss_results", {});
+  const [premium, setPremium] = useLocalStorage("ss_premium", false);
+
+  const [screen, setScreen] = useState(loggedIn ? "dashboard" : "welcome");
+  const [params, setParams] = useState({});
+  const [toasts, setToasts] = useState([]);
+  const initialised = useRef(false);
+
+  useEffect(() => {
+    const start = window.__splashStart || Date.now();
+    const minDur = window.__splashMinMs || 2000;
+    const wait = Math.max(0, minDur - (Date.now() - start));
+    const t1 = setTimeout(() => {
+      const boot = document.getElementById("boot");
+      if(boot){
+        boot.classList.add("hide");
+        document.body.classList.add("app-ready");
+        setTimeout(() => { boot.style.display = "none"; }, 650);
+      }
+    }, wait);
+    return () => clearTimeout(t1);
+  }, []);
+
+  const scrollTop = () => { try { window.scrollTo(0, 0); } catch(e){} };
+
+  useEffect(() => {
+    if(initialised.current) return;
+    initialised.current = true;
+    try { window.history.replaceState({ ssScreen: screen, ssParams: params }, ""); } catch(e){}
+  }, []);
+
+  useEffect(() => {
+    const onPop = (e) => {
+      if(e.state && e.state.ssScreen){
+        setScreen(e.state.ssScreen);
+        setParams(e.state.ssParams || {});
+      } else {
+        setScreen(loggedIn ? "dashboard" : "welcome");
+        setParams({});
+      }
+      scrollTop();
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [loggedIn]);
+
+  const pushHistory = (scr, p) => {
+    try { window.history.pushState({ ssScreen: scr, ssParams: p }, ""); } catch(e){}
+  };
+  const replaceHistory = (scr, p) => {
+    try { window.history.replaceState({ ssScreen: scr, ssParams: p }, ""); } catch(e){}
+  };
+
+  const toast = (msg, kind = "success") => {
+    const id = Date.now() + Math.random();
+    setToasts(t => [...t, { id, msg, kind }]);
+    setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 2800);
+  };
+
+  const go = (next, nextParams = {}) => {
+    pushHistory(next, nextParams);
+    setScreen(next); setParams(nextParams); scrollTop();
+  };
+
+  const navigate = (next, nextParams = {}) => {
+    replaceHistory(next, nextParams);
+    setScreen(next); setParams(nextParams); scrollTop();
+  };
+
+  const back = () => {
+    try { window.history.back(); } catch(e){ navigate("dashboard"); }
+  };
+
+  const signIn = (next = "dashboard") => {
+    setLoggedIn(true);
+    replaceHistory(next, {});
+    setScreen(next); setParams({}); scrollTop();
+  };
+
+  const signOut = () => {
+    setLoggedIn(false);
+    replaceHistory("welcome", {});
+    setScreen("welcome"); setParams({}); scrollTop();
+    toast("Logged out — see you soon!", "info");
+  };
+
+  const toggleBookmark = (subjectId, noteId) => {
+    const k = KEY(subjectId, noteId);
+    setBookmarks(prev => {
+      const has = prev.includes(k);
+      toast(has ? "Removed from your library" : "Saved to your library", has ? "info" : "success");
+      return has ? prev.filter(x => x !== k) : [...prev, k];
+    });
+  };
+
+  const openNote = (subjectId, noteId) => {
+    const found = findResource(subjectId, noteId);
+    if(!found){ toast("That note could not be found", "error"); return; }
+    if(!found.resource.free && !premium){
+      toast("This note is part of StudySmart Premium", "info");
+      go("premium"); return;
+    }
+    setRecent(prev => [
+      { subjectId, noteId, at:Date.now() },
+      ...prev.filter(r => !(r.subjectId === subjectId && r.noteId === noteId))
+    ].slice(0, 14));
+    go("note", { subjectId, noteId });
+  };
+
+  const saveResult = (subjectId, result) => {
+    setResults(prev => ({ ...prev, [subjectId]: result }));
+    const pct = Math.round((result.score / result.total) * 100);
+    toast("Quiz submitted — you scored " + pct + "%");
+  };
+
+  const ctx = {
+    screen, params, go, navigate, back,
+    user, setUser, prefs, setPrefs,
+    loggedIn, signIn, signOut,
+    premium, setPremium,
+    bookmarks, toggleBookmark,
+    recent, openNote,
+    results, saveResult,
+    toast,
+    quizzes: QUIZZES,
+    subjects: ALL_SUBJECTS
+  };
+
+  const effectiveScreen = (!loggedIn && screen !== "welcome" && screen !== "auth") ? "welcome" : screen;
+
+  let content = null;
+  if(effectiveScreen === "welcome"){ content = html`<${Welcome} />`; }
+  else if(effectiveScreen === "auth"){ content = html`<${Auth} />`; }
+  else if(effectiveScreen === "ai") { content = html`<${Shell} activeId="dashboard"><${AIChat} /></${Shell}>`; }
+  else {
+    const map = {
+      dashboard: [html`<${Dashboard} />`, "dashboard"],
+      subjects:  [html`<${Subjects} />`, "subjects"],
+      subject:   [html`<${SubjectDetail} />`, "subjects"],
+      note:      [html`<${NoteReader} />`, "subjects"],
+      "3d-model":[html`<${ThreeDViewer} />`, "subjects"],
+      quizzes:   [html`<${Quizzes} />`, "quizzes"],
+      quiz:      [html`<${QuizPlayer} />`, "quizzes"],
+      quizResult:[html`<${QuizResult} />`, "quizzes"],
+      library:   [html`<${Library} />`, "library"],
+      premium:   [html`<${Premium} />`, "profile"],
+      profile:   [html`<${Profile} />`, "profile"]
+    };
+    const entry = map[effectiveScreen] || map.dashboard;
+    content = html`<${Shell} activeId=${entry[1]}>${entry[0]}</${Shell}>`;
+  }
+
+  return html`<${AppCtx.Provider} value=${ctx}>
+    ${content}
+    <${ToastStack} toasts=${toasts} />
+  </${AppCtx.Provider}>`;
+}
+
+try {
+  ReactDOM.createRoot(document.getElementById("root")).render(html`<${App} />`);
+} catch(err){
+  window.__ssCrash("Render error", (err && err.message) || String(err));
+}
+
+})();
+</script>
+</body>
+</html>
